@@ -1,18 +1,43 @@
-import { expect } from 'chai';
-import { existsSync, unlinkSync } from 'fs';
-import 'mocha';
+import {expect} from 'chai';
+import {sync as mkdirp} from 'mkdirp';
+import {sync as rimraf} from 'rimraf';
+import {catchError, map} from 'rxjs/operators';
 
-import { spawn } from '../src/spawn';
+import {existsSync} from 'fs';
+import {of, throwError} from 'rxjs';
+import {spawn} from '../src/spawn';
 
 describe('spawn', () => {
-  it('should execute shell command', (done) => {
-    spawn('touch ./test.txt').subscribe(() => {
-      expect(existsSync('./test.txt')).to.equal(true);
-      done();
-    });
+  before(() => mkdirp('./tmp'));
+
+  it('should execute shell command', done => {
+    of(void 0)
+      .pipe(spawn('touch', ['test.txt'], {cwd: './tmp'}))
+      .subscribe(() => {
+        expect(existsSync('./tmp/test.txt')).to.be.true;
+        done();
+      });
   });
 
-  after(() => {
-    unlinkSync('./test.txt');
+  it('should emit console output buffer', done => {
+    of(void 0)
+      .pipe(spawn('echo', ['Hello World']))
+      .subscribe(buffer => {
+        expect(String(buffer)).to.equal('Hello World\n');
+        done();
+      });
   });
+
+  it('should throw error ', done => {
+    mkdirp('./tmp/test2');
+
+    of(void 0)
+      .pipe(spawn('mkdir', ['test2'], {cwd: './tmp'}))
+      .subscribe(void 0, err => {
+        expect(String(err)).to.match(/exists/);
+        done();
+      });
+  });
+
+  after(() => rimraf('./tmp'));
 });

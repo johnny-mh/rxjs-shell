@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "tslint -p tsconfig.json --fix",
-    "test": "mocha -r ts-node/register test/**/*.spec.ts"
+    "test": "mocha -r ts-node/register test/**/*.spec",
+    "coverage": "nyc mocha -r ts-node/register -r source-map-support/register test/**/*"
   },
   "keywords": [
     "rxjs",
@@ -16,12 +17,18 @@
   "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.1.4",
+    "@types/mkdirp": "^0.5.2",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.9.4",
-    "chai": "^4.1.2",
+    "@types/rimraf": "^2.0.2",
+    "chai": "*",
     "husky": "^1.0.0-rc.14",
-    "mocha": "^5.2.0",
+    "mkdirp": "^0.5.1",
+    "mocha": "*",
+    "nyc": "^13.0.1",
+    "rimraf": "^2.6.2",
     "rxjs": "^6.3.2",
+    "source-map-support": "^0.5.9",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "typescript": "^3.0.3"
@@ -30,5 +37,20 @@
     "hooks": {
       "pre-commit": "tslint -p tsconfig.json --fix"
     }
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "index.ts",
+      "coverage",
+      "**/*.spec.ts"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "all": true
   }
 }
