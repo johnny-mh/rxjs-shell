@@ -1,0 +1,16 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "rules": {
+    "quotemark": [true, "single", "avoid-escape", "avoid-template"],
+    "no-console": {
+      "severity": "warning"
+    }
+  },
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": ["dist/**/*"]
+  }
+}
