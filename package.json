@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "tslint -p tsconfig.json --fix",
-    "test": "mocha -r ts-node/register test/**/*.spec",
+    "test": "mocha -r ts-node/register test/**/*",
     "coverage": "nyc mocha -r ts-node/register -r source-map-support/register test/**/*"
   },
   "keywords": [
