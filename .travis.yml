@@ -1,0 +1,8 @@
+language: nodejs
+
+before_script: npm install
+
+script: npm test
+
+after_success:
+  - tsc -p tsconfig.json
