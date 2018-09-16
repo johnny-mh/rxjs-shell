@@ -1,17 +1,22 @@
 {
   "defaultSeverity": "error",
   "extends": [
-    "tslint:recommended"
+    "tslint:recommended",
+    "tslint-config-prettier"
   ],
   "rules": {
+    "prettier": true,
     "arrow-parens": [false],
     "quotemark": [true, "single", "avoid-escape", "avoid-template"],
     "no-console": {
       "severity": "warning"
     },
-    "trailing-comma": [true, {"esSpecCompliant": true}]
+    "trailing-comma": [true, {"esSpecCompliant": true}],
+    "interface-name": [true, "never-prefix"]
   },
-  "rulesDirectory": [],
+  "rulesDirectory": [
+    "tslint-plugin-prettier"
+  ],
   "linterOptions": {
     "exclude": ["dist/**/*"]
   }
