@@ -1,2 +1,5 @@
 # rxjs-shell-operators
-rxjs operators for execute shell command with ease"
+
+![travisci](https://travis-ci.org/johnny-mh/rxjs-shell-operators.svg?branch=master)
+
+rxjs operators for execute shell command with ease
