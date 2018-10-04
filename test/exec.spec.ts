@@ -1,16 +1,16 @@
 import {expect} from 'chai';
-import {spawn} from '../src/spawn';
+import {exec} from '../src/exec';
 
-describe('spawn.ts', () => {
+describe('exec.ts', () => {
   it('should return buffer text after script execution', done => {
-    spawn('echo', ['hello world']).subscribe(buf => {
-      expect(String(buf).trim()).to.equal('hello world');
+    exec('echo "Hello World"').subscribe(output => {
+      expect(output.trim()).to.equal('Hello World');
       done();
     });
   });
 
   it('should handle errors', done => {
-    spawn('mkdir test').subscribe({
+    exec('mkdir test').subscribe({
       error(err) {
         expect(String(err)).to.match(/error/i);
         done();

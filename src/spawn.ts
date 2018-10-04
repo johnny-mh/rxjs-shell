@@ -1,55 +1,38 @@
-import {
-  spawn as nodeSpawn,
-  SpawnOptions as NodeSpawnOptions,
-} from 'child_process';
+import {spawn as nodeSpawn, SpawnOptions} from 'child_process';
 import {Observable, Subscriber} from 'rxjs';
-
-export interface SpawnOptions extends NodeSpawnOptions {
-  threshold?: number;
-}
+import {killProc} from './util';
 
 export function spawn(
   command: string,
   args?: ReadonlyArray<string>,
   options?: SpawnOptions
 ) {
-  return function spawnImplementation(
-    source: Observable<void>
-  ): Observable<Buffer[]> {
-    return Observable.create((subscriber: Subscriber<Buffer>) => {
-      const buffers: Buffer[] = [];
-      const proc = nodeSpawn(command, args, options);
-      const subscription = source.subscribe(
-        () => {
-          proc.stdout.on('data', (chunk: Buffer) => buffers.push(chunk));
+  return new Observable((subscriber: Subscriber<Buffer>) => {
+    const proc = nodeSpawn(command, args, options);
 
-          proc.stderr.on('data', (chunk: Buffer) => buffers.push(chunk));
+    if (proc.stdout) {
+      proc.stdout.on('data', chunk => subscriber.next(chunk));
+    }
 
-          proc.on('error', () => subscriber.error(Buffer.concat(buffers)));
+    if (proc.stderr) {
+      proc.stderr.on('data', chunk => subscriber.next(chunk));
+    }
 
-          proc.on('close', (code: number) => {
-            proc.removeAllListeners();
-            proc.stdout.removeAllListeners();
-            proc.stderr.removeAllListeners();
-
-            if (code > 0) {
-              subscriber.error(Buffer.concat(buffers));
-            } else {
-              subscriber.next(Buffer.concat(buffers));
-              subscriber.complete();
-            }
-          });
-        },
-        err => subscriber.error(err)
-      );
-
-      subscriber.add(() => {
-        if (!proc.killed) {
-          proc.kill('SIGUSR1');
-        }
-      });
-
-      return subscription;
+    proc.on('error', err => {
+      process.exitCode = 1;
+      subscriber.error(err);
     });
-  };
+
+    proc.on('close', code => {
+      if (code > 0) {
+        process.exitCode = code;
+        subscriber.error(code);
+        return;
+      }
+
+      subscriber.complete();
+    });
+
+    return () => killProc(proc);
+  });
 }
