@@ -8,8 +8,8 @@
     "strict": true,
     "typeRoots": ["node_modules/@types"],
     "esModuleInterop": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true
   },
   "exclude": [
     "**/flycheck**"

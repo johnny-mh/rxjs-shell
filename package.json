@@ -53,7 +53,7 @@
       "coverage",
       "**/*.spec.ts",
       "dist/",
-      "**flycheck**"
+      "flycheck**"
     ],
     "reporter": [
       "text",
