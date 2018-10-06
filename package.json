@@ -2,6 +2,10 @@
   "name": "rxjs-shell-operators",
   "version": "0.0.1",
   "description": "rxjs operators for execute shell command with ease",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/johnny-mh/rxjs-shell-operators.git"
+  },
   "main": "dist/index.js",
   "scripts": {
     "lint": "tslint -p tsconfig.json --fix",
