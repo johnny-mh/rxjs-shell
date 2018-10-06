@@ -6,11 +6,13 @@
     "type": "git",
     "url": "git://github.com/johnny-mh/rxjs-shell-operators.git"
   },
-  "main": "dist/index.js",
+  "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "lint": "tslint -p tsconfig.json --fix",
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
-    "cover": "rm -rf .nyc_output && rm -rf coverage && nyc mocha -r ts-node/register -r source-map-support/register test/**/*.spec.ts"
+    "cover": "rm -rf .nyc_output && rm -rf coverage && nyc mocha -r ts-node/register -r source-map-support/register test/**/*.spec.ts",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && cp package.json dist/"
   },
   "keywords": [
     "rxjs",
