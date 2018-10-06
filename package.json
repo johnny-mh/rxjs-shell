@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "tslint -p tsconfig.json --fix",
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
-    "cover": "nyc mocha -r ts-node/register -r source-map-support/register test/**/*.spec.ts"
+    "cover": "rm -rf .nyc_output && rm -rf coverage && nyc mocha -r ts-node/register -r source-map-support/register test/**/*.spec.ts"
   },
   "keywords": [
     "rxjs",
@@ -49,11 +49,12 @@
       ".ts"
     ],
     "exclude": [
-      "index.ts",
-      "coverage",
-      "**/*.spec.ts",
       "dist/",
-      "flycheck**"
+      "coverage",
+      "src/index.ts",
+      "**/*.spec.ts",
+      "**/flycheck**",
+      "test/fixtures/**"
     ],
     "reporter": [
       "text",

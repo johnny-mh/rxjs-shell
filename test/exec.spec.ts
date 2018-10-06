@@ -9,6 +9,13 @@ describe('exec.ts', () => {
     });
   });
 
+  it('should return stderr text.', done => {
+    exec('>&2 echo "ERR"').subscribe(output => {
+      expect(output.trim()).to.equal('ERR');
+      done();
+    });
+  });
+
   it('should handle errors', done => {
     exec('mkdir test').subscribe({
       error(err) {

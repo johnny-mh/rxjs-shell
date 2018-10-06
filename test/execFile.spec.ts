@@ -12,22 +12,14 @@ describe('execFile.ts', () => {
     });
   });
 
-  it.only('should kill process when stream unsubscribed', done => {
-    // TODO
+  it('should kill process when stream unsubscribed', done => {
     const subs = execFile(
       join(process.cwd(), 'test/fixtures/touch.sh')
-    ).subscribe({
-      next() {
-        console.log('next');
-      },
-      error(err) {
-        console.log('error', err);
-      },
-      complete() {
-        console.log('complete');
-        expect(existsSync(join(process.cwd(), 'touched.txt'))).to.be.false;
-        done();
-      },
+    ).subscribe();
+
+    subs.add(() => {
+      expect(existsSync(join(process.cwd(), 'touched.txt'))).to.be.false;
+      done();
     });
 
     subs.unsubscribe();

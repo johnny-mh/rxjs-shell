@@ -12,7 +12,8 @@
       "severity": "warning"
     },
     "trailing-comma": [true, {"esSpecCompliant": true}],
-    "interface-name": [true, "never-prefix"]
+    "interface-name": [true, "never-prefix"],
+    "object-literal-sort-keys": false
   },
   "rulesDirectory": [
     "tslint-plugin-prettier"
