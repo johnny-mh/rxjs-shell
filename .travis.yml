@@ -1,12 +1,16 @@
-language: nodejs
-
+language: node_js
+sudo: false
+dist: trusty
 node_js:
-  - "lts/8"
+  - '8.12.0'
+  - 'node'
 
 cache:
   directories:
-    - "node_modules"
+    - ./node_modules
 
-before_script: npm install
+before_script:
+  - npm install
 
-script: npm test
+script:
+  - npm test
