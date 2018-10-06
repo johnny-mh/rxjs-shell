@@ -12,7 +12,7 @@ rxjs operators for execute shell command with ease.
 
 ## Functions
 
-### exec(command[, options]) → Observable<string> 
+### exec(command[, options]) → Observable\<string\> 
 
 - `options` interface is same with nodejs `exec` method
 
