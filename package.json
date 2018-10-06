@@ -41,7 +41,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "tslint -p tsconfig.json --fix"
+      "pre-commit": "tslint -p tsconfig.json"
     }
   },
   "nyc": {

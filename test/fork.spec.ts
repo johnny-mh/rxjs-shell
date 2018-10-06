@@ -1,10 +1,10 @@
 import {expect} from 'chai';
-import {sync as rimrafSync} from 'rimraf';
-import {join} from 'path';
 import {existsSync} from 'fs';
+import {join} from 'path';
+import {sync as rimrafSync} from 'rimraf';
 
-import {fork} from '../src/fork';
 import {Subject} from 'rxjs';
+import {fork} from '../src/fork';
 
 describe('fork.ts', () => {
   it('should execute module', done => {
