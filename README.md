@@ -25,7 +25,7 @@ exec('echo Hello World')
   });
 ```
 
-### execFile(file[, args][, options]) → Observable<string>
+### execFile(file[, args][, options]) → Observable\<string\>
 
 - `options` interface is same with nodejs `execFile` method
 
@@ -39,7 +39,7 @@ execFile('./touchFile.sh')
   });
 ```
 
-### spawn(command[, args][, options]) → Observable<Buffer>
+### spawn(command[, args][, options]) → Observable\<Buffer\>
 
 - `spawn` emits `stdout`, `stderr`'s buffer from command execution.
 - `options` interface is same with nodejs `spawn` method
@@ -52,7 +52,7 @@ spawn('git clone http://github.com/johnny-mh/rxjs-shell-operators')
   .subscribe();
 ```
 
-### fork(modulePath[, args][, options]) → Observable<Buffer>
+### fork(modulePath[, args][, options]) → Observable\<Buffer\>
 
 - same with `spawn` but have own `options` interface that extend nodejs fork options to communicate with child process.
 
