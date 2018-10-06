@@ -2,8 +2,7 @@ language: node_js
 sudo: false
 dist: trusty
 node_js:
-  - '8.12.0'
-  - 'node'
+  - 'lts/8'
 
 cache:
   directories:
