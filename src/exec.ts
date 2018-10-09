@@ -6,7 +6,7 @@ export function exec(command: string, options?: ExecOptions) {
   return new Observable((subscriber: Subscriber<string>) => {
     const proc = nodeExec(command, options, (err, stdout, stderr) => {
       if (err) {
-        subscriber.error(err);
+        subscriber.error({err, stdout, stderr});
         return;
       }
 

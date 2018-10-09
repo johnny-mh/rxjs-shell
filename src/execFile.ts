@@ -10,7 +10,7 @@ export function execFile(
   return new Observable((subscriber: Subscriber<string>) => {
     const proc = nodeExecFile(file, args, options, (err, stdout, stderr) => {
       if (err) {
-        subscriber.error(err);
+        subscriber.error({err, stdout, stderr});
         return;
       }
 
