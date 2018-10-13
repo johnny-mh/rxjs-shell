@@ -1,6 +1,6 @@
 {
-  "name": "rxjs-shell-operators",
-  "version": "0.0.2",
+  "name": "rxjs-shell",
+  "version": "0.0.3",
   "description": "rxjs operators for execute shell command with ease",
   "repository": {
     "type": "git",
@@ -23,11 +23,13 @@
   "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.1.4",
+    "@types/chai-spies": "^1.0.0",
     "@types/mkdirp": "^0.5.2",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.9.4",
     "@types/rimraf": "^2.0.2",
     "chai": "*",
+    "chai-spies": "^1.0.0",
     "husky": "^1.0.0-rc.14",
     "mkdirp": "^0.5.1",
     "mocha": "*",
