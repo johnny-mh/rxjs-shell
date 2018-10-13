@@ -46,6 +46,16 @@ describe('fork.ts', () => {
     send.next('hello');
   });
 
+  it.only('should fork ts module', done => {
+    const recv = new Subject<any>();
+
+    fork(join(process.cwd(), 'test/fixtures/echo.ts'), undefined, {
+      recv,
+    }).subscribe();
+
+    recv.subscribe(msg => done());
+  });
+
   after(() => {
     rimrafSync(join(process.cwd(), 'forkTouched.txt'));
     rimrafSync(join(process.cwd(), 'forkTouched2.txt'));

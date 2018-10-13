@@ -70,7 +70,25 @@ fork('echo.js', undefined, {send, recv}).subscribe();
 send.next('message to child process');
 ```
 
-## Operators ans Utility methods
+## Operators
+
+### trim(encoding = 'utf8') → Observable\<string | Buffer\>
+
+- trim child process output
+
+```typescript
+import {exec, trim} from 'rxjs-shell';
+
+exec('echo Hello').subscribe(output => console.log(output)); // Hello\n
+
+exec('echo Hello').pipe(trim()).subscribe(output => console.log(output)); // Hello
+```
+
+### print → Observable\<string | Buffer\>
+
+- syntax sugar of `tap(buf => process.stdout.write(buf))`
+
+## Utility Methods
 
 ### spawnEnd(spawnObservable: Observable<any>) → Subject\<void\>
 
@@ -87,7 +105,3 @@ spawnEnd(spawn('webpack', ['-p']))
   .pipe(webpackOutput => { /* do something */ })
   .subscribe();
 ```
-
-### printBuf → Observable\<string | Buffer\>
-
-- syntax sugar of `tap(buf => process.stdout.write(buf))`

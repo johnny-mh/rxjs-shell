@@ -27,4 +27,4 @@ export function trim<T>(encoding = 'utf8') {
   };
 }
 
-export const printBuf = tap<Buffer | string>(buf => process.stdout.write(buf));
+export const print = tap<Buffer | string>(buf => process.stdout.write(buf));
