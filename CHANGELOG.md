@@ -1,4 +1,4 @@
-# [0.0.3] (2018-10-13)
+# 0.0.3 (2018-10-13)
 
 - change package name to `rxjs-shell`
 
