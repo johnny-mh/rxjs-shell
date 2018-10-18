@@ -1,12 +1,12 @@
 import {exec as nodeExec, ExecOptions} from 'child_process';
 import {Observable, Subscriber} from 'rxjs';
-import {killProc} from './util';
+import {killProc, ShellError} from './util';
 
 export function exec(command: string, options?: ExecOptions) {
   return new Observable((subscriber: Subscriber<string>) => {
     const proc = nodeExec(command, options, (err, stdout, stderr) => {
       if (err) {
-        subscriber.error({err, stdout, stderr});
+        subscriber.error(new ShellError('exec', err, stdout, stderr));
         return;
       }
 

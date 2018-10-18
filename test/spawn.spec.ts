@@ -12,7 +12,7 @@ describe('spawn.ts', () => {
   it('should handle errors', done => {
     spawn('mkdir test').subscribe({
       error(err) {
-        expect(String(err)).to.match(/error/i);
+        expect(String(err)).to.match(/spawn:/i);
         done();
       },
     });

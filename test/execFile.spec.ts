@@ -3,6 +3,7 @@ import {existsSync} from 'fs';
 import {join} from 'path';
 import {sync as rimrafSync} from 'rimraf';
 import {execFile} from '../src/execFile';
+import {ShellError} from '../src/util';
 
 describe('execFile.ts', () => {
   it('should return buffer text after script execution', done => {
@@ -23,6 +24,16 @@ describe('execFile.ts', () => {
     });
 
     subs.unsubscribe();
+  });
+
+  it('should handle error', done => {
+    execFile(join(process.cwd(), 'test/fixtures/execFile.sh')).subscribe({
+      error(err) {
+        expect(err instanceof ShellError).to.true;
+        expect(String(err)).to.match(/execFile:/i);
+        done();
+      },
+    });
   });
 
   after(() => {

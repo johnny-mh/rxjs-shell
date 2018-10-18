@@ -2,6 +2,7 @@ import {expect} from 'chai';
 import {switchMap} from 'rxjs/operators';
 
 import {exec} from '../src/exec';
+import {ShellError} from '../src/util';
 
 describe('exec.ts', () => {
   it('should return buffer text after script execution', done => {
@@ -21,7 +22,8 @@ describe('exec.ts', () => {
   it('should handle errors', done => {
     exec('mkdir test').subscribe({
       error(err) {
-        expect(String(err.err)).to.match(/error/i);
+        expect(err instanceof ShellError).to.true;
+        expect(String(err)).to.match(/exec:/i);
         done();
       },
     });

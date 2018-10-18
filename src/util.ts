@@ -21,3 +21,35 @@ export function spawnEnd(spawnObservable: Observable<any>) {
 
   return sbj;
 }
+
+export class ShellError extends Error {
+  constructor(
+    public message: string,
+    public originError: any,
+    public stdout?: string | Buffer,
+    public stderr?: string | Buffer
+  ) {
+    super(message);
+  }
+
+  toString() {
+    let message = `${this.message}: `;
+    const {stdout, stderr} = this;
+
+    if (typeof stdout !== 'undefined' && stdout.length > 0) {
+      message += `${(Buffer.isBuffer(stdout)
+        ? stdout.toString('utf8')
+        : stdout
+      ).trim()}`;
+    }
+
+    if (typeof stderr !== 'undefined' && stderr.length > 0) {
+      message += `${(Buffer.isBuffer(stderr)
+        ? stderr.toString('utf8')
+        : stderr
+      ).trim()}`;
+    }
+
+    return message;
+  }
+}

@@ -2,7 +2,7 @@ import {expect, spy, use} from 'chai';
 import spies from 'chai-spies';
 
 import {exec} from '../src/exec';
-import {print, trim} from '../src/operators';
+import {trim} from '../src/operators';
 import {spawn} from '../src/spawn';
 
 use(spies);
@@ -23,17 +23,6 @@ describe('operators.ts', () => {
       .pipe(trim())
       .subscribe(output => {
         expect(output).to.equal('HELLO');
-        done();
-      });
-  });
-
-  it('should print buffer to process.stdout', done => {
-    spawn('echo', ['Hello'])
-      .pipe(print)
-      .subscribe(() => {
-        expect(process.stdout.write).to.have.been.called.with(
-          new Buffer('Hello\n')
-        );
         done();
       });
   });

@@ -46,7 +46,7 @@ describe('fork.ts', () => {
     send.next('hello');
   });
 
-  it.only('should fork ts module', done => {
+  it('should fork ts module', done => {
     const recv = new Subject<any>();
 
     fork(join(process.cwd(), 'test/fixtures/echo.ts'), undefined, {

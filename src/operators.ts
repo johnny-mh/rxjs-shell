@@ -1,5 +1,5 @@
 import {Observable, Subject, Subscriber} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 export function trim<T>(encoding = 'utf8') {
   return function trimImplementation(source: Observable<T>): Observable<T> {
@@ -26,5 +26,3 @@ export function trim<T>(encoding = 'utf8') {
     });
   };
 }
-
-export const print = tap<Buffer | string>(buf => process.stdout.write(buf));

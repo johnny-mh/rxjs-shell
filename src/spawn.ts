@@ -1,6 +1,6 @@
 import {spawn as nodeSpawn, SpawnOptions} from 'child_process';
 import {Observable, Subscriber} from 'rxjs';
-import {killProc} from './util';
+import {killProc, ShellError} from './util';
 
 export function spawn(
   command: string,
@@ -20,13 +20,13 @@ export function spawn(
 
     proc.on('error', err => {
       process.exitCode = 1;
-      subscriber.error(err);
+      subscriber.error(new ShellError('spawn', err));
     });
 
     proc.on('close', code => {
       if (code > 0) {
         process.exitCode = code;
-        subscriber.error(code);
+        subscriber.error(new ShellError('spawn', code));
         return;
       }
 

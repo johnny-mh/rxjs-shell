@@ -84,10 +84,6 @@ exec('echo Hello').subscribe(output => console.log(output)); // Hello\n
 exec('echo Hello').pipe(trim()).subscribe(output => console.log(output)); // Hello
 ```
 
-### print → Observable\<string | Buffer\>
-
-- syntax sugar of `tap(buf => process.stdout.write(buf))`
-
 ## Utility Methods
 
 ### spawnEnd(spawnObservable: Observable<any>) → Subject\<void\>

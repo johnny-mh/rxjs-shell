@@ -1,6 +1,6 @@
 import {fork as nodeFork, ForkOptions as NodeForkOptions} from 'child_process';
 import {Observable, Subject, Subscriber, Subscription} from 'rxjs';
-import {killProc} from './util';
+import {killProc, ShellError} from './util';
 
 interface ForkOptions<T = any, R = T> extends NodeForkOptions {
   send?: Subject<T>;
@@ -36,7 +36,7 @@ export function fork(
 
     proc.on('error', err => {
       process.exitCode = 1;
-      subscriber.error(err);
+      subscriber.error(new ShellError('fork', err));
     });
 
     proc.on('close', code => {
@@ -44,7 +44,7 @@ export function fork(
 
       if (code > 0) {
         process.exitCode = code;
-        subscriber.error(code);
+        subscriber.error(new ShellError('fork', code));
         return;
       }
 

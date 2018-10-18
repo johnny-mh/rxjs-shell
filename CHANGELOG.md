@@ -1,3 +1,8 @@
+# 0.0.5 (2018-10-18)
+
+- create `ShellError` class for throw shell errors.
+- `operators/print` operator deprecated. (use `{stdio: 'inherit'}` instead)
+
 # 0.0.4 (2018-10-13)
 
 - change function name `operators/printBuf` to `operators/print`.

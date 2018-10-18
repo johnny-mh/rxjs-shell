@@ -1,6 +1,6 @@
 import {execFile as nodeExecFile, ExecFileOptions} from 'child_process';
 import {Observable, Subscriber} from 'rxjs';
-import {killProc} from './util';
+import {killProc, ShellError} from './util';
 
 export function execFile(
   file: string,
@@ -10,7 +10,7 @@ export function execFile(
   return new Observable((subscriber: Subscriber<string>) => {
     const proc = nodeExecFile(file, args, options, (err, stdout, stderr) => {
       if (err) {
-        subscriber.error({err, stdout, stderr});
+        subscriber.error(new ShellError('execFile', err, stdout, stderr));
         return;
       }
 
