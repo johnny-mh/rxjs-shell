@@ -3,4 +3,4 @@ export * from './execFile';
 export * from './fork';
 export * from './spawn';
 export * from './operators';
-export {spawnEnd} from './util';
+export {spawnEnd, ShellError} from './util';
