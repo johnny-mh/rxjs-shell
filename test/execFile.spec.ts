@@ -2,13 +2,14 @@ import {expect} from 'chai';
 import {existsSync} from 'fs';
 import {join} from 'path';
 import {sync as rimrafSync} from 'rimraf';
+
 import {execFile} from '../src/execFile';
 import {ShellError} from '../src/util';
 
 describe('execFile.ts', () => {
   it('should return buffer text after script execution', done => {
     execFile(join(process.cwd(), 'test/fixtures/echo.sh')).subscribe(output => {
-      expect(output.trim()).to.equal('Hello World');
+      expect(String(output.stdout).trim()).to.equal('Hello World');
       done();
     });
   });
@@ -30,7 +31,7 @@ describe('execFile.ts', () => {
     execFile(join(process.cwd(), 'test/fixtures/execFile.sh')).subscribe({
       error(err) {
         expect(err instanceof ShellError).to.true;
-        expect(String(err)).to.match(/execFile:/i);
+        expect(String(err)).to.match(/execFile/i);
         done();
       },
     });

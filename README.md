@@ -12,7 +12,7 @@ rxjs operators for execute shell command with ease.
 
 ## Functions
 
-### exec(command[, options]) → Observable\<string\> 
+### exec(command[, options]) → Observable\<{stdout: string | Buffer, stderr: string | Buffer}\> 
 
 - `options` interface is same with nodejs `exec` method
 
@@ -21,11 +21,11 @@ import {exec} from 'rxjs-shell';
 
 exec('echo Hello World')
   .subscribe(output => {
-    console.log(output); // Hello World\n
+    console.log(output.stdout.toString('utf8')); // Hello World\n
   });
 ```
 
-### execFile(file[, args][, options]) → Observable\<string\>
+### execFile(file[, args][, options]) → Observable\<{stdout: string | Buffer, stderr: string | Buffer}\>
 
 - `options` interface is same with nodejs `execFile` method
 
@@ -39,7 +39,7 @@ execFile('./touchFile.sh')
   });
 ```
 
-### spawn(command[, args][, options]) → Observable\<Buffer\>
+### spawn(command[, args][, options]) → Observable\<{type: 'stdout' | 'stderr', chunk: Buffer}\>
 
 - `spawn` emits `stdout`, `stderr`'s buffer from command execution.
 - `options` interface is same with nodejs `spawn` method
@@ -48,45 +48,42 @@ execFile('./touchFile.sh')
 import {spawn} from 'rxjs-shell';
 
 spawn('git clone http://github.com/johnny-mh/rxjs-shell-operators')
-  .pipe(tap(buf => process.stdout.write(String(buf))))
+  .pipe(tap(chunk => process.stdout.write(String(chunk.chunk))))
   .subscribe();
 ```
 
-### fork(modulePath[, args][, options]) → Observable\<Buffer\>
+### fork<T = any>(modulePath[, args][, options]) → Observable\<T\>
 
-- same with `spawn` but have own `options` interface that extend nodejs fork options to communicate with child process.
+- same with `spawn` but have own `options` interface that extend nodejs's `fork` options to communicate with child process.
 
 ```typescript
 import {fork} from 'rxjs-shell';
 import {Subject} from 'rxjs';
 
 const send = new Subject<string>();
-const recv = new Subject<string>();
 
-recv.subscribe(msgFromChildProc => console.log(msgFromChildProc));
-
-fork('echo.js', undefined, {send, recv}).subscribe();
+fork('echo.js', undefined, {send}).subscribe(msgFromChildProc => console.log(msgFromChildProc));
 
 send.next('message to child process');
 ```
 
 ## Operators
 
-### trim(encoding = 'utf8') → Observable\<string | Buffer\>
+### trim(encoding = 'utf8')
 
 - trim child process output
 
 ```typescript
 import {exec, trim} from 'rxjs-shell';
 
-exec('echo Hello').subscribe(output => console.log(output)); // Hello\n
+exec('echo Hello').subscribe(output => console.log(output.stdout.toString())); // Hello\n
 
-exec('echo Hello').pipe(trim()).subscribe(output => console.log(output)); // Hello
+exec('echo Hello').pipe(trim()).subscribe(output => console.log(output.stdout.toString())); // Hello
 ```
 
 ## Utility Methods
 
-### spawnEnd(spawnObservable: Observable<any>) → Subject\<void\>
+### spawnEnd(spawnObservable: Observable<any>) → Subject\<{stdout: Buffer, stderr: Buffer}\>
 
 - `spawn` emit each buffer from child process. if you want to connect other operator to this stream. use `spawnEnd` method.
 

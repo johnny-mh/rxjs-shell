@@ -1,5 +1,6 @@
 import {ChildProcess} from 'child_process';
 import {Observable, Subject} from 'rxjs';
+import {ExecOutput, SpawnChunk} from './models';
 
 export function killProc(proc: ChildProcess) {
   if (proc.stdout) {
@@ -14,10 +15,24 @@ export function killProc(proc: ChildProcess) {
   proc.kill('SIGKILL');
 }
 
-export function spawnEnd(spawnObservable: Observable<any>) {
-  const sbj = new Subject<void>();
+export function spawnEnd(spawnObservable: Observable<SpawnChunk>) {
+  const sbj = new Subject<ExecOutput>();
 
-  spawnObservable.subscribe(undefined, err => sbj.error(err), () => sbj.next());
+  const stdouts: Buffer[] = [];
+  const stderrs: Buffer[] = [];
+
+  spawnObservable.subscribe(
+    chunk => {
+      if (chunk.type === 'stdout') {
+        stdouts.push(chunk.chunk);
+      } else {
+        stderrs.push(chunk.chunk);
+      }
+    },
+    err => sbj.error(err),
+    () =>
+      sbj.next({stdout: Buffer.concat(stdouts), stderr: Buffer.concat(stderrs)})
+  );
 
   return sbj;
 }
@@ -25,31 +40,11 @@ export function spawnEnd(spawnObservable: Observable<any>) {
 export class ShellError extends Error {
   constructor(
     public message: string,
-    public originError: any,
+    public code?: string,
     public stdout?: string | Buffer,
-    public stderr?: string | Buffer
+    public stderr?: string | Buffer,
+    public originError?: any
   ) {
     super(message);
-  }
-
-  toString() {
-    let message = `${this.message}: `;
-    const {stdout, stderr} = this;
-
-    if (typeof stdout !== 'undefined' && stdout.length > 0) {
-      message += `${(Buffer.isBuffer(stdout)
-        ? stdout.toString('utf8')
-        : stdout
-      ).trim()}`;
-    }
-
-    if (typeof stderr !== 'undefined' && stderr.length > 0) {
-      message += `${(Buffer.isBuffer(stderr)
-        ? stderr.toString('utf8')
-        : stderr
-      ).trim()}`;
-    }
-
-    return message;
   }
 }

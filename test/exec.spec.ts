@@ -7,14 +7,14 @@ import {ShellError} from '../src/util';
 describe('exec.ts', () => {
   it('should return buffer text after script execution', done => {
     exec('echo "Hello World"').subscribe(output => {
-      expect(output.trim()).to.equal('Hello World');
+      expect(String(output.stdout).trim()).to.equal('Hello World');
       done();
     });
   });
 
   it('should return stderr text.', done => {
     exec('>&2 echo "ERR"').subscribe(output => {
-      expect(output.trim()).to.equal('ERR');
+      expect(String(output.stderr).trim()).to.equal('ERR');
       done();
     });
   });
@@ -23,7 +23,7 @@ describe('exec.ts', () => {
     exec('mkdir test').subscribe({
       error(err) {
         expect(err instanceof ShellError).to.true;
-        expect(String(err)).to.match(/exec:/i);
+        expect(String(err)).to.match(/exec/i);
         done();
       },
     });
@@ -33,7 +33,7 @@ describe('exec.ts', () => {
     exec('sh ./test/fixtures/echo2.sh')
       .pipe(switchMap(() => exec('sh ./test/fixtures/echo.sh')))
       .subscribe(output => {
-        expect(output.trim()).to.equal('Hello World');
+        expect(String(output.stdout).trim()).to.equal('Hello World');
         done();
       });
   });

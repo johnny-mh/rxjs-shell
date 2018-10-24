@@ -1,3 +1,19 @@
+# 0.0.7 (2018-10-24)
+
+- enhance `ShellError` data.
+- `spawnEnd` now emit `ExecOutput` of `spawn` results.
+
+### Breaking Changes
+
+- `spawn` emit `SpawnChunk` type. no `Buffer`.
+- `exec`, `execFile` emit `ExecOutput` type. no `string`
+- `fork` emit child process's message. no `string | Buffer`.
+- deleted `fork` method's `recv` option. messages from child process will emit subscription.
+
+# 0.0.6
+
+- not use
+
 # 0.0.5 (2018-10-18)
 
 - create `ShellError` class for throw shell errors.

@@ -2,9 +2,10 @@ import {expect} from 'chai';
 import {existsSync} from 'fs';
 import {join} from 'path';
 import {sync as rimrafSync} from 'rimraf';
-
 import {Subject} from 'rxjs';
+
 import {fork} from '../src/fork';
+import {ShellError} from '../src/util';
 
 describe('fork.ts', () => {
   it('should execute module', done => {
@@ -33,12 +34,9 @@ describe('fork.ts', () => {
     const send = new Subject<string>();
     const recv = new Subject<string>();
 
-    fork(join(process.cwd(), 'test/fixtures/fork3.js'), undefined, {
+    fork<string>(join(process.cwd(), 'test/fixtures/fork3.js'), undefined, {
       send,
-      recv,
-    }).subscribe();
-
-    recv.subscribe(msg => {
+    }).subscribe(msg => {
       expect(msg).to.equal('hello world');
       done();
     });
@@ -49,11 +47,18 @@ describe('fork.ts', () => {
   it('should fork ts module', done => {
     const recv = new Subject<any>();
 
-    fork(join(process.cwd(), 'test/fixtures/echo.ts'), undefined, {
-      recv,
-    }).subscribe();
+    fork(join(process.cwd(), 'test/fixtures/echo.ts'), undefined).subscribe(
+      msg => done()
+    );
+  });
 
-    recv.subscribe(msg => done());
+  it('should handle errors', done => {
+    fork(join(process.cwd(), 'test/fixtures/forkError.js')).subscribe({
+      error(err) {
+        expect(err instanceof ShellError).to.true;
+        done();
+      },
+    });
   });
 
   after(() => {
