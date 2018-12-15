@@ -1,6 +1,6 @@
 {
   "name": "rxjs-shell",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "description": "rxjs operators for execute shell command with ease",
   "repository": {
     "type": "git",
