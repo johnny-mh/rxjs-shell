@@ -98,3 +98,25 @@ spawnEnd(spawn('webpack', ['-p']))
   .pipe(webpackOutput => { /* do something */ })
   .subscribe();
 ```
+
+## Error Handling
+
+```typescript
+import {spawn, ShellError} from 'rxjs-shell';
+
+spawn('git clone http://github.com/johnny-mh/rxjs-shell-operators')
+  .pipe(tap(chunk => process.stdout.write(String(chunk.chunk))))
+  .subscribe({
+    catch(err) {
+      if (!(err instanceof ShellError)) {
+        throw err;
+      }
+
+      console.log(err.stdout);
+      console.log(err.stderr);
+      console.log(err.message);
+      console.log(err.code);
+      console.log(err.originError);
+    }
+  });
+```
