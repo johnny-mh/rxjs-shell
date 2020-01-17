@@ -1,3 +1,19 @@
+# 1.0.3 (2020-01-17)
+
+- fix security vulnerabilities
+
+# 1.0.2 (2019-09-04)
+
+- add error handling example
+
+# 1.0.1 (2019-09-02)
+
+- fix security vulnerabilities
+
+# 1.0.0 (2018-12-15)
+
+- no changes. just update version
+
 # 0.0.7 (2018-10-24)
 
 - enhance `ShellError` data.
