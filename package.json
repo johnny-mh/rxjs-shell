@@ -9,10 +9,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/johnny-mh/rxjs-shell-operators.git"
+    "url": "git://github.com/johnny-mh/rxjs-shell.git"
   },
   "license": "MIT",
-  "author": "johnny-mh <everedifice@gmail.com>",
+  "author": "johnny-mh <romz1212@gmail.com>",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
