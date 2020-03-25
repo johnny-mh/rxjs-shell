@@ -3,6 +3,7 @@ import {switchMap} from 'rxjs/operators';
 
 import {exec} from '../src/exec';
 import {ShellError} from '../src/util';
+import {MockProcessEvent} from './test-util';
 
 describe('exec.ts', () => {
   it('should return buffer text after script execution', done => {
@@ -36,5 +37,23 @@ describe('exec.ts', () => {
         expect(String(output.stdout).trim()).to.equal('Hello World');
         done();
       });
+  });
+
+  describe('should kill process when specific signals generated', () => {
+    let mock: MockProcessEvent;
+
+    beforeEach(() => (mock = new MockProcessEvent()));
+    afterEach(() => mock.destroy());
+
+    it('SIGINT', done => {
+      const subscription = exec('sh ./test/fixtures/sleep10sec.sh').subscribe();
+
+      process.on('SIGINT', () => {
+        expect(subscription.closed).is.true;
+        done();
+      });
+
+      mock.emit('SIGINT');
+    });
   });
 });
