@@ -9,12 +9,16 @@ interface ForkOptions<T = any> extends NodeForkOptions {
 
 export function fork<T = any>(
   modulePath: string,
-  args?: ReadonlyArray<string>,
+  args?: any[],
   options?: ForkOptions
 ) {
   return new Observable((subscriber: Subscriber<T>) => {
     try {
-      const proc = nodeFork(modulePath, args, options);
+      const proc = nodeFork(
+        modulePath,
+        args ? args.map(String) : args,
+        options
+      );
       const channelSubscriptions: Subscription[] = [];
 
       if (!!options && options.send instanceof Subject) {

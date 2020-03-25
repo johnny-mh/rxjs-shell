@@ -4,14 +4,10 @@ import {Observable, Subscriber} from 'rxjs';
 import {RXJS_SHELL_ERROR, SpawnChunk} from './models';
 import {killProc, listenTerminating, ShellError} from './util';
 
-export function spawn(
-  command: string,
-  args?: ReadonlyArray<string>,
-  options?: SpawnOptions
-) {
+export function spawn(command: string, args?: any[], options?: SpawnOptions) {
   return new Observable((subscriber: Subscriber<SpawnChunk>) => {
     try {
-      const proc = nodeSpawn(command, args, options);
+      const proc = nodeSpawn(command, args ? args.map(String) : args, options);
       const stdouts: Buffer[] = [];
       const stderrs: Buffer[] = [];
 
