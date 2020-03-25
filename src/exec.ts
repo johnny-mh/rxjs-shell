@@ -2,7 +2,7 @@ import {exec as nodeExec, ExecOptions} from 'child_process';
 import {Observable, Subscriber} from 'rxjs';
 
 import {ExecOutput, RXJS_SHELL_ERROR} from './models';
-import {killProc, ShellError} from './util';
+import {killProc, listenTerminating, ShellError} from './util';
 
 export function exec(command: string, options?: ExecOptions) {
   return new Observable((subscriber: Subscriber<ExecOutput>) => {
@@ -18,6 +18,11 @@ export function exec(command: string, options?: ExecOptions) {
       subscriber.complete();
     });
 
-    return () => killProc(proc);
+    const removeEvents = listenTerminating(() => subscriber.complete());
+
+    return () => {
+      killProc(proc);
+      removeEvents();
+    };
   });
 }

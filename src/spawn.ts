@@ -2,7 +2,7 @@ import {spawn as nodeSpawn, SpawnOptions} from 'child_process';
 import {Observable, Subscriber} from 'rxjs';
 
 import {RXJS_SHELL_ERROR, SpawnChunk} from './models';
-import {killProc, ShellError} from './util';
+import {killProc, listenTerminating, ShellError} from './util';
 
 export function spawn(
   command: string,
@@ -62,7 +62,12 @@ export function spawn(
         subscriber.complete();
       });
 
-      return () => killProc(proc);
+      const removeEvents = listenTerminating(() => subscriber.complete());
+
+      return () => {
+        killProc(proc);
+        removeEvents();
+      };
     } catch (err) {
       subscriber.error(
         new ShellError(err.message, err.code, undefined, undefined, err)

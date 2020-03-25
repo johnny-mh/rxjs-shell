@@ -1,5 +1,7 @@
 import {ChildProcess} from 'child_process';
 import {Observable, Subject} from 'rxjs';
+import kill from 'tree-kill';
+
 import {ExecOutput, SpawnChunk} from './models';
 
 export function killProc(proc: ChildProcess) {
@@ -12,6 +14,13 @@ export function killProc(proc: ChildProcess) {
   }
 
   proc.removeAllListeners();
+
+  if (typeof proc.pid === 'number') {
+    kill(proc.pid, 'SIGKILL');
+
+    return;
+  }
+
   proc.kill('SIGKILL');
 }
 
@@ -47,4 +56,25 @@ export class ShellError extends Error {
   ) {
     super(message);
   }
+}
+
+const terminatingSignals: ReadonlyArray<NodeJS.Signals> = [
+  'SIGINT',
+  'SIGUSR1',
+  'SIGUSR2',
+  'SIGTERM',
+];
+
+export function listenTerminating(fn: (...args: any[]) => any): () => void {
+  terminatingSignals.forEach(name => process.on(name, fn));
+
+  process.on('exit', fn);
+  process.on('uncaughtException', fn);
+
+  return () => {
+    terminatingSignals.forEach(name => process.off(name, fn));
+
+    process.off('exit', fn);
+    process.off('uncaughtException', fn);
+  };
 }

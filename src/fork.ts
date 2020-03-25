@@ -1,8 +1,7 @@
 import {fork as nodeFork, ForkOptions as NodeForkOptions} from 'child_process';
 import {Observable, Subject, Subscriber, Subscription} from 'rxjs';
 
-import {SpawnChunk} from './models';
-import {killProc, ShellError} from './util';
+import {killProc, listenTerminating, ShellError} from './util';
 
 interface ForkOptions<T = any> extends NodeForkOptions {
   send?: Subject<T>;
@@ -59,10 +58,13 @@ export function fork<T = any>(
         subscriber.complete();
       });
 
+      const removeEvents = listenTerminating(() => subscriber.complete());
+
       return () => {
         channelSubscriptions.forEach(s => s.unsubscribe());
 
         killProc(proc);
+        removeEvents();
       };
     } catch (err) {
       subscriber.error(

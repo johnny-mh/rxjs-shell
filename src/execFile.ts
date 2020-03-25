@@ -2,7 +2,7 @@ import {execFile as nodeExecFile, ExecFileOptions} from 'child_process';
 import {Observable, Subscriber} from 'rxjs';
 
 import {ExecOutput, RXJS_SHELL_ERROR} from './models';
-import {killProc, ShellError} from './util';
+import {killProc, listenTerminating, ShellError} from './util';
 
 export function execFile(
   file: string,
@@ -22,6 +22,11 @@ export function execFile(
       subscriber.complete();
     });
 
-    return () => killProc(proc);
+    const removeEvents = listenTerminating(() => subscriber.complete());
+
+    return () => {
+      killProc(proc);
+      removeEvents();
+    };
   });
 }
