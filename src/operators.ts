@@ -1,5 +1,4 @@
-import {Observable, Subject, Subscriber} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 
 import {ExecOutput, SpawnChunk} from './models';
 

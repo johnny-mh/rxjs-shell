@@ -3,6 +3,7 @@ import {join} from 'path';
 
 import {spawn} from '../src/spawn';
 import {ShellError} from '../src/util';
+import {MockProcessEvent} from './test-util';
 
 describe('spawn.ts', () => {
   it('should return buffer text after script execution', done => {
@@ -37,6 +38,24 @@ describe('spawn.ts', () => {
         expect(err instanceof ShellError).to.true;
         done();
       },
+    });
+  });
+
+  describe('should kill process when specific signals generated', () => {
+    let mock: MockProcessEvent;
+
+    beforeEach(() => (mock = new MockProcessEvent()));
+    afterEach(() => mock.destroy());
+
+    it('SIGINT', done => {
+      const subscription = spawn('test/fixtures/sleep10sec.sh').subscribe();
+
+      process.on('SIGINT', () => {
+        expect(subscription.closed).is.true;
+        done();
+      });
+
+      mock.emit('SIGINT');
     });
   });
 });

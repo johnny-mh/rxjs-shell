@@ -1,3 +1,9 @@
+# 1.0.4 (2020-03-26)
+
+- all methods cancel process when following signals and events generated. `SIGINT`, `SIGUSR1`, `SIGUSR2`, `SIGTERM`, `exit`, `uncaughtException`.
+- change `fork`, `spawn` seconds parameter of methods for convenience. now accept `any[]`. casting internally.
+- fix security vulnerabilities
+
 # 1.0.3 (2020-01-17)
 
 - fix security vulnerabilities

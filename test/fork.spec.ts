@@ -6,8 +6,14 @@ import {Subject} from 'rxjs';
 
 import {fork} from '../src/fork';
 import {ShellError} from '../src/util';
+import {MockProcessEvent} from './test-util';
 
 describe('fork.ts', () => {
+  after(() => {
+    rimrafSync(join(process.cwd(), 'forkTouched.txt'));
+    rimrafSync(join(process.cwd(), 'forkTouched2.txt'));
+  });
+
   it('should execute module', done => {
     fork(join(process.cwd(), 'test/fixtures/forkTouch.js')).subscribe({
       complete() {
@@ -61,8 +67,21 @@ describe('fork.ts', () => {
     });
   });
 
-  after(() => {
-    rimrafSync(join(process.cwd(), 'forkTouched.txt'));
-    rimrafSync(join(process.cwd(), 'forkTouched2.txt'));
+  describe('should kill process when specific signals generated', () => {
+    let mock: MockProcessEvent;
+
+    beforeEach(() => (mock = new MockProcessEvent()));
+    afterEach(() => mock.destroy());
+
+    it('SIGINT', done => {
+      const subscription = fork('test/fixtures/sleep10sec.sh').subscribe();
+
+      process.on('SIGINT', () => {
+        expect(subscription.closed).is.true;
+        done();
+      });
+
+      mock.emit('SIGINT');
+    });
   });
 });
