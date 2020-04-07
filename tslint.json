@@ -6,7 +6,7 @@
   ],
   "rules": {
     "prettier": true,
-    "arrow-parens": [false],
+    "arrow-parens": false,
     "quotemark": [true, "single", "avoid-escape", "avoid-template"],
     "no-console": {
       "severity": "warning"
@@ -14,7 +14,9 @@
     "trailing-comma": [true, {"esSpecCompliant": true}],
     "interface-name": [true, "never-prefix"],
     "object-literal-sort-keys": false,
-    "member-access": [true, "no-public"]
+    "member-access": [true, "no-public"],
+    "variable-name": {"options": ["allow-leading-underscore"]},
+    "no-bitwise": false
   },
   "rulesDirectory": [
     "tslint-plugin-prettier"

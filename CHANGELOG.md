@@ -1,3 +1,11 @@
+# 2.0.0 (2020-04-08)
+
+- add `throwIf`, `throwIfStdout`, `throwIfStderr` operators to throw error manually.
+
+### Breaking Changes
+
+- `trim` keep `ExecOutput` properties type. if type of stdout is `Buffer` output type is `Buffer`. if `string` output is `string`.
+
 # 1.0.4 (2020-03-26)
 
 - all methods cancel process when following signals and events generated. `SIGINT`, `SIGUSR1`, `SIGUSR2`, `SIGTERM`, `exit`, `uncaughtException`.

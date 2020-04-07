@@ -1,48 +1,303 @@
-import {expect} from 'chai';
-import {of} from 'rxjs';
+import * as chai from 'chai';
+import chaiExclude from 'chai-exclude';
+import {TestScheduler} from 'rxjs/testing';
 
-import {exec} from '../src/exec';
-import {trim} from '../src/operators';
-import {spawn} from '../src/spawn';
+import {throwIf, throwIfStderr, throwIfStdout, trim} from '../src/operators';
 import {ShellError} from '../src/util';
 
+chai.use(chaiExclude);
+
 describe('operators.ts', () => {
-  it('trim exec', done => {
-    exec('echo HELLO')
-      .pipe(trim())
-      .subscribe(output => {
-        expect(String(output.stdout)).to.equal('HELLO');
-        done();
-      });
+  let scheduler: TestScheduler;
+
+  beforeEach(() => {
+    scheduler = new TestScheduler((actual, expected) => {
+      chai
+        .expect(actual)
+        .excludingEvery('stack')
+        .deep.equal(expected);
+    });
   });
 
-  it('trim spawn', done => {
-    spawn('echo', ['HELLO'])
-      .pipe(trim())
-      .subscribe(chunk => {
-        expect(String(chunk.chunk)).to.equal('HELLO');
-        done();
+  describe('trim', () => {
+    it('should trim ExecOutput contents', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const source$ = cold('-a', {
+          a: {stdout: new Buffer(' Hello '), stderr: new Buffer(' World')},
+        });
+
+        expectObservable(source$.pipe(trim())).toBe('-x', {
+          x: {stdout: new Buffer('Hello'), stderr: new Buffer('World')},
+        });
       });
+    });
+
+    it('should trim SpawnChunk contents', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const source$ = cold('-a', {
+          a: {type: 'stdout', chunk: new Buffer(' Hello World ')},
+        });
+
+        expectObservable(source$.pipe(trim())).toBe('-x', {
+          x: {type: 'stdout', chunk: new Buffer('Hello World')},
+        });
+      });
+    });
+
+    it('should not handle other values', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const value = {hello: 'world'};
+        const source$ = cold('-a', {a: value});
+
+        expectObservable(source$.pipe(trim())).toBe('-x', {
+          x: value,
+        });
+      });
+    });
   });
 
-  it('pass other value', done => {
-    const origin = {hello: 'world'};
-    of(origin)
-      .pipe(trim())
-      .subscribe(out => {
-        expect(out === origin).to.be.true;
-        done();
+  describe('throwIf', () => {
+    it('should throw error by SpawnChunk contents pattern matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const source$ = cold('a', {
+          a: {
+            type: 'stdout',
+            chunk: new Buffer('Error: test error'),
+          },
+        });
+
+        expectObservable(source$.pipe(throwIf('Error:'))).toBe(
+          '#',
+          null,
+          new ShellError(
+            'throwIf: stdout is matching /Error:/',
+            undefined,
+            new Buffer('Error: test error'),
+            undefined
+          )
+        );
       });
+    });
+
+    it('should throw error by ExecOutput contents pattern matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const source$ = cold('a', {
+          a: {
+            stdout: new Buffer('GREAT!'),
+            stderr: new Buffer(''),
+          },
+        });
+
+        expectObservable(source$.pipe(throwIf(/GREAT!/))).toBe(
+          '#',
+          null,
+          new ShellError(
+            'throwIf: stdout is matching /GREAT!/',
+            undefined,
+            new Buffer('GREAT!'),
+            undefined
+          )
+        );
+      });
+    });
+
+    it('should not throw error when pattern is not matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const value = {
+          stdout: new Buffer('GREAT!'),
+          stderr: new Buffer(''),
+        };
+        const source$ = cold('a', {a: value});
+
+        expectObservable(source$.pipe(throwIf(/NOTGREAT!/))).toBe('x', {
+          x: value,
+        });
+      });
+    });
+
+    it('should not handle other values', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const value = {hello: 'world'};
+        const source$ = cold('a', {a: value});
+
+        expectObservable(source$.pipe(throwIf(/GOOD/))).toBe('x', {
+          x: value,
+        });
+      });
+    });
   });
 
-  it('pass error', done => {
-    spawn('')
-      .pipe(trim())
-      .subscribe({
-        error(err) {
-          expect(err instanceof ShellError).to.be.true;
-          done();
-        },
+  describe('throwIfStdout', () => {
+    it('should throw error by SpawnChunk stdout contents pattern matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const source$ = cold('a', {
+          a: {
+            type: 'stdout',
+            chunk: new Buffer('Error: test error'),
+          },
+        });
+
+        expectObservable(source$.pipe(throwIfStdout('Error:'))).toBe(
+          '#',
+          null,
+          new ShellError(
+            'throwIf: stdout is matching /Error:/',
+            undefined,
+            new Buffer('Error: test error')
+          )
+        );
       });
+    });
+
+    it('should not throw error by SpawnChunk stderr contents pattern matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const value = {
+          type: 'stderr',
+          chunk: new Buffer('Error: test error'),
+        };
+        const source$ = cold('a', {a: value});
+
+        expectObservable(source$.pipe(throwIfStdout(/Error:/))).toBe('x', {
+          x: value,
+        });
+      });
+    });
+
+    it('should not throw error by SpawnChunk stdout contents pattern not matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const value = {
+          type: 'stdout',
+          chunk: new Buffer('Error: test error'),
+        };
+        const source$ = cold('a', {a: value});
+
+        expectObservable(source$.pipe(throwIfStdout(/NotError:/))).toBe('x', {
+          x: value,
+        });
+      });
+    });
+
+    it('should throw error by ExecOutput stdout contents pattern matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const source$ = cold('a', {
+          a: {
+            stdout: new Buffer('Stdout: test'),
+            stderr: new Buffer('Stderr: test'),
+          },
+        });
+
+        expectObservable(source$.pipe(throwIfStdout(/Stdout:/))).toBe(
+          '#',
+          null,
+          new ShellError(
+            'throwIf: stdout is matching /Stdout:/',
+            undefined,
+            new Buffer('Stdout: test')
+          )
+        );
+      });
+    });
+
+    it('should not throw error by ExecOutput stderr despite of contents pattern matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const value = {
+          stdout: new Buffer('stdout'),
+          stderr: new Buffer('stderr'),
+        };
+        const source$ = cold('a', {a: value});
+
+        expectObservable(source$.pipe(throwIfStdout(/stderr/))).toBe('x', {
+          x: value,
+        });
+      });
+    });
+  });
+
+  describe('throwIfStderr', () => {
+    it('should throw error by SpawnChunk stderr contents pattern matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const source$ = cold('a', {
+          a: {
+            type: 'stderr',
+            chunk: new Buffer('Error: test error'),
+          },
+        });
+
+        expectObservable(source$.pipe(throwIfStderr('Error:'))).toBe(
+          '#',
+          null,
+          new ShellError(
+            'throwIf: stderr is matching /Error:/',
+            undefined,
+            undefined,
+            new Buffer('Error: test error')
+          )
+        );
+      });
+    });
+
+    it('should not throw error by SpawnChunk stdout contents pattern matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const value = {
+          type: 'stdout',
+          chunk: new Buffer('Error: test error'),
+        };
+        const source$ = cold('a', {a: value});
+
+        expectObservable(source$.pipe(throwIfStderr(/Error:/))).toBe('x', {
+          x: value,
+        });
+      });
+    });
+
+    it('should not throw error by SpawnChunk stderr contents pattern not matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const value = {
+          type: 'stderr',
+          chunk: new Buffer('Error: test error'),
+        };
+        const source$ = cold('a', {a: value});
+
+        expectObservable(source$.pipe(throwIfStderr(/NotError:/))).toBe('x', {
+          x: value,
+        });
+      });
+    });
+
+    it('should throw error by ExecOutput stderr contents pattern matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const source$ = cold('a', {
+          a: {
+            stdout: new Buffer('Stdout: test'),
+            stderr: new Buffer('Stderr: test'),
+          },
+        });
+
+        expectObservable(source$.pipe(throwIfStderr(/Stderr:/))).toBe(
+          '#',
+          null,
+          new ShellError(
+            'throwIf: stderr is matching /Stderr:/',
+            undefined,
+            undefined,
+            new Buffer('Stderr: test')
+          )
+        );
+      });
+    });
+
+    it('should not throw error by ExecOutput stdout despite of contents pattern matching', () => {
+      scheduler.run(({cold, expectObservable}) => {
+        const value = {
+          stdout: new Buffer('stdout'),
+          stderr: new Buffer('stderr'),
+        };
+        const source$ = cold('a', {a: value});
+
+        expectObservable(source$.pipe(throwIfStderr(/stdout/))).toBe('x', {
+          x: value,
+        });
+      });
+    });
   });
 });
