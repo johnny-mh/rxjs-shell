@@ -81,6 +81,38 @@ exec('echo Hello').subscribe(output => console.log(output.stdout.toString())); /
 exec('echo Hello').pipe(trim()).subscribe(output => console.log(output.stdout.toString())); // Hello
 ```
 
+### throwIf(pattern: string | RegExp)
+
+- manually throw error if contents of `stdout` or `stderr` is matching supplied pattern
+
+```typescript
+import {throwIf} from 'rxjs-shell';
+
+exec('echo Hello').pipe(throwIf(/Hello/)).subscribe(); // ERROR
+```
+
+### throwIfStdout(pattern: string | RegExp)
+
+- manually throw error if contents of `stdout` is matching supplied pattern
+
+```typescript
+import {throwIfStdout} from 'rxjs-shell';
+
+exec('echo Hello').pipe(throwIfStdout(/Hello/)).subscribe(); // ERROR
+exec('>&2 echo Hello').pipe(throwIfStdout(/Hello/)).subscribe(); // OK
+```
+
+### throwIfStderr(pattern: string | RegExp)
+
+- manually throw error if contents of `stderr` is matching supplied pattern
+
+```typescript
+import {throwIfStderr} from 'rxjs-shell';
+
+exec('echo Hello').pipe(throwIfStderr(/Hello/)).subscribe(); // OK
+exec('>&2 echo Hello').pipe(throwIfStderr(/Hello/)).subscribe(); // ERR
+```
+
 ## Utility Methods
 
 ### spawnEnd(spawnObservable: Observable<any>) → Subject\<{stdout: Buffer, stderr: Buffer}\>
@@ -119,4 +151,16 @@ spawn('git clone http://github.com/johnny-mh/rxjs-shell-operators')
       console.log(err.originError);
     }
   });
+```
+
+## FAQ
+
+### Operator does not throw script error
+
+Some shell script doesn't completed with Non-Zero code. they just emitting error message to `stderr` or `stdout` 😢. If so. hard to throw `ShellError` because of `err` is `null`. You can use `throwIf`, `throwIfStdout`, `throwIfStderr` operator manually throwing specific scripts.
+
+```typescript
+exec('sh a.sh')
+  .pipe(concatMap(() => exec('sh b.sh').pipe(throwIf(/ERROR:/))))
+  .subscribe();
 ```
