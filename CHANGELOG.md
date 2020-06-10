@@ -1,3 +1,7 @@
+# 2.1.0 (2020-06-10)
+
+- export `listenTerminating` to terminating whole process
+
 # 2.0.0 (2020-04-08)
 
 - add `throwIf`, `throwIfStdout`, `throwIfStderr` operators to throw error manually ([#11](https://github.com/johnny-mh/rxjs-shell/issues/11))

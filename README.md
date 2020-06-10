@@ -131,6 +131,39 @@ spawnEnd(spawn('webpack', ['-p']))
   .subscribe();
 ```
 
+### listenTerminating(fn: () => any)
+
+- invoke callbacks when one of signals that below is emitted.
+  - `SIGINT`
+  - `SIGUSR1`
+  - `SIGUSR2`
+  - `SIGTERM`
+
+basically each operators are listen that. if user pressed `^C` below stream is unsubscribe immediatly.
+
+```typescript
+exec('curl ...')
+  .pipe(
+    concatMap(() => exec('curl ...'))
+  )
+  .subscribe();
+```
+
+but if operators are not tied of one stream. whole process does not terminate. in this case. you can use `listenTerminating`.
+
+```typescript
+import {listenTerminating, exec} from 'rxjs-shell';
+
+// terminate process 
+listenTerminating(() => process.exit(1));
+
+(async () => {
+  await exec('curl ...').toPromise(); // user pressing ^C while curl is running
+
+  await exec('curl -X POST ...').toPromise(); // execute despite of pressing ^C. needs `listenTerminating`
+})
+```
+
 ## Error Handling
 
 ```typescript
