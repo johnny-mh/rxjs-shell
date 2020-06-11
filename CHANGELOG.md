@@ -1,3 +1,7 @@
+# 2.1.2 (2020-06-11)
+
+- change `listenTerminating` callback parameter type
+
 # 2.1.1 (2020-06-11)
 
 - change `listenTerminating` listen `SIGINT`, `SIGBREAK` only.

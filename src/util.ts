@@ -59,7 +59,7 @@ export class ShellError extends Error {
 }
 
 export function listenTerminating(
-  fn: (signal: NodeJS.Signals) => any,
+  fn: (signal: number) => any,
   events: NodeJS.Signals[] = ['SIGINT', 'SIGBREAK']
 ): () => void {
   events.forEach(name => process.on(name, fn));
