@@ -1,3 +1,7 @@
+# 2.1.1 (2020-06-11)
+
+- change `listenTerminating` listen `SIGINT`, `SIGBREAK` only.
+
 # 2.1.0 (2020-06-10)
 
 - export `listenTerminating` to terminating whole process

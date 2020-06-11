@@ -135,9 +135,7 @@ spawnEnd(spawn('webpack', ['-p']))
 
 - invoke callbacks when one of signals that below is emitted.
   - `SIGINT`
-  - `SIGUSR1`
-  - `SIGUSR2`
-  - `SIGTERM`
+  - `SIGBREAK` (for windows)
 
 basically each operators are listen that. if user pressed `^C` below stream is unsubscribe immediatly.
 
@@ -155,12 +153,14 @@ but if operators are not tied of one stream. whole process does not terminate. i
 import {listenTerminating, exec} from 'rxjs-shell';
 
 // terminate process 
-listenTerminating(() => process.exit(1));
+listenTerminating(code => process.exit(code));
 
 (async () => {
-  await exec('curl ...').toPromise(); // user pressing ^C while curl is running
+  // user pressing ^C while curl is running
+  await exec('curl ...').toPromise();
 
-  await exec('curl -X POST ...').toPromise(); // execute despite of pressing ^C. needs `listenTerminating`
+  // execute despite of pressing ^C. needs `listenTerminating`
+  await exec('curl -X POST ...').toPromise();
 })
 ```
 

@@ -58,23 +58,15 @@ export class ShellError extends Error {
   }
 }
 
-const terminatingSignals: ReadonlyArray<NodeJS.Signals> = [
-  'SIGINT',
-  'SIGUSR1',
-  'SIGUSR2',
-  'SIGTERM',
-];
-
-export function listenTerminating(fn: (...args: any[]) => any): () => void {
-  terminatingSignals.forEach(name => process.on(name, fn));
-
+export function listenTerminating(
+  fn: (signal: NodeJS.Signals) => any,
+  events: NodeJS.Signals[] = ['SIGINT', 'SIGBREAK']
+): () => void {
+  events.forEach(name => process.on(name, fn));
   process.on('exit', fn);
-  process.on('uncaughtException', fn);
 
   return () => {
-    terminatingSignals.forEach(name => process.off(name, fn));
-
+    events.forEach(name => process.off(name, fn));
     process.off('exit', fn);
-    process.off('uncaughtException', fn);
   };
 }

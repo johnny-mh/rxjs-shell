@@ -1,6 +1,6 @@
 {
   "name": "rxjs-shell",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "rxjs operators for execute shell command with ease",
   "keywords": [
     "rxjs",
@@ -53,7 +53,7 @@
     "@types/chai-spies": "^1.0.0",
     "@types/mkdirp": "^0.5.2",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.9.4",
+    "@types/node": "^10.17.26",
     "@types/rimraf": "^2.0.2",
     "@types/sinon": "^7.5.2",
     "chai": "*",
