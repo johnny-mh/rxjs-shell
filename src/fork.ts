@@ -1,79 +1,56 @@
-import {fork as nodeFork, ForkOptions as NodeForkOptions} from 'child_process';
+import {ForkOptions, Serializable, fork as nodeFork} from 'child_process';
+
 import {Observable, Subject, Subscriber, Subscription} from 'rxjs';
 
-import {killProc, listenTerminating, ShellError} from './util';
+import {ShellError, killProc, listenTerminating} from './util';
 
-interface ForkOptions<T = any> extends NodeForkOptions {
-  send?: Subject<T>;
-}
-
-export function fork<T = any>(
+export function fork(
   modulePath: string,
   args?: any[],
-  options?: ForkOptions
+  options?: ForkOptions & {send?: Subject<any>}
 ) {
-  return new Observable((subscriber: Subscriber<T>) => {
-    try {
-      const proc = nodeFork(
-        modulePath,
-        args ? args.map(String) : args,
-        options
-      );
-      const channelSubscriptions: Subscription[] = [];
+  return new Observable((subscriber: Subscriber<Serializable>) => {
+    const proc = nodeFork(modulePath, args ? args.map(String) : args, options);
+    const channelSubscriptions: Subscription[] = [];
 
-      if (!!options && options.send instanceof Subject) {
-        channelSubscriptions.push(
-          options.send.subscribe(msg => proc.send(msg))
-        );
-      }
+    if (!!options && options.send instanceof Subject) {
+      channelSubscriptions.push(options.send.subscribe(msg => proc.send(msg)));
+    }
 
-      proc.on('message', msg => subscriber.next(msg));
+    proc.on('message', msg => subscriber.next(msg));
 
-      proc.on('error', err => {
-        process.exitCode = 1;
+    proc.on('error', err => {
+      process.exitCode = 1;
+
+      subscriber.error(new ShellError('process exited with an error', err));
+    });
+
+    proc.on('close', (code, signal) => {
+      channelSubscriptions.forEach(s => s.unsubscribe());
+
+      if (code > 0) {
+        process.exitCode = code;
 
         subscriber.error(
-          new ShellError(
-            'fork: process exited with error',
-            'RXJS_SHELL_ERROR',
-            undefined,
-            undefined,
-            err
-          )
+          new ShellError(`process exited with code: ${code}`, {
+            code,
+            signal,
+          })
         );
-      });
 
-      proc.on('close', (code: number, signal: NodeJS.Signals) => {
-        channelSubscriptions.forEach(s => s.unsubscribe());
+        return;
+      }
 
-        if (code > 0) {
-          process.exitCode = code;
+      subscriber.complete();
+    });
 
-          subscriber.error(
-            new ShellError(
-              `fork: ${signal} process exited with code ${code}`,
-              'RXJS_SHELL_ERROR'
-            )
-          );
+    const removeEvents = listenTerminating(() => subscriber.complete());
 
-          return;
-        }
+    return () => {
+      channelSubscriptions.forEach(s => s.unsubscribe());
 
-        subscriber.complete();
-      });
-
-      const removeEvents = listenTerminating(() => subscriber.complete());
-
-      return () => {
-        channelSubscriptions.forEach(s => s.unsubscribe());
-
-        killProc(proc);
-        removeEvents();
-      };
-    } catch (err) {
-      subscriber.error(
-        new ShellError(err.message, err.code, undefined, undefined, err)
-      );
-    }
+      killProc(proc);
+      removeEvents();
+    };
   });
 }

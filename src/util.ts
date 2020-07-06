@@ -1,4 +1,5 @@
-import {ChildProcess} from 'child_process';
+import {ChildProcess, ExecException} from 'child_process';
+
 import {Observable, Subject} from 'rxjs';
 import kill from 'tree-kill';
 
@@ -49,12 +50,44 @@ export function spawnEnd(spawnObservable: Observable<SpawnChunk>) {
 export class ShellError extends Error {
   constructor(
     public message: string,
-    public code?: string,
+    public originError?:
+      | ExecException
+      | Error
+      | {code: number; signal: NodeJS.Signals},
     public stdout?: string | Buffer,
-    public stderr?: string | Buffer,
-    public originError?: any
+    public stderr?: string | Buffer
   ) {
     super(message);
+  }
+
+  toAnnotatedString() {
+    let msg = `
+-----* MESSAGE *-----
+${this.message}
+---------------------`;
+
+    if (this.originError) {
+      msg += `
+-----* ERROR *-------
+${JSON.stringify(this.originError, undefined, 2)}
+---------------------`;
+    }
+
+    if (this.stdout) {
+      msg += `
+-----* STDOUT *------
+${this.stdout.toString('utf8')}
+---------------------`;
+    }
+
+    if (this.stderr) {
+      msg += `
+-----* STDERR *------
+${this.stderr.toString('utf8')}
+---------------------`;
+    }
+
+    return msg;
   }
 }
 
