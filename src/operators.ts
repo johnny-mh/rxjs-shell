@@ -15,7 +15,7 @@ export function isExecOutput(obj: any): obj is ExecOutput {
   );
 }
 
-export function trim<T>(encoding = 'utf8') {
+export function trim<T>(encoding: BufferEncoding = 'utf8') {
   return function trimImplementation(source: Observable<T>): Observable<T> {
     return Observable.create((subscriber: any) => {
       const subscription = source.subscribe(
@@ -23,15 +23,15 @@ export function trim<T>(encoding = 'utf8') {
           if (isSpawnChunk(value)) {
             subscriber.next({
               type: value.type,
-              chunk: new Buffer(String(value.chunk).trim(), encoding),
+              chunk: Buffer.from(String(value.chunk).trim(), encoding),
             });
           } else if (isExecOutput(value)) {
             subscriber.next({
               stdout: Buffer.isBuffer(value.stdout)
-                ? new Buffer(value.stdout.toString(encoding).trim())
+                ? Buffer.from(value.stdout.toString(encoding).trim())
                 : value.stdout.trim(),
               stderr: Buffer.isBuffer(value.stderr)
-                ? new Buffer(value.stderr.toString(encoding).trim())
+                ? Buffer.from(value.stderr.toString(encoding).trim())
                 : value.stderr.trim(),
             });
           } else {

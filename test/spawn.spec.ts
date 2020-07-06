@@ -1,5 +1,6 @@
-import {expect} from 'chai';
 import {join} from 'path';
+
+import {expect} from 'chai';
 
 import {spawn} from '../src/spawn';
 import {ShellError} from '../src/util';
@@ -26,14 +27,14 @@ describe('spawn.ts', () => {
   it('should handle errors', done => {
     spawn('mkdir test').subscribe({
       error(err) {
-        expect(String(err)).to.match(/spawn:/i);
+        expect(String(err)).to.match(/error/i);
         done();
       },
     });
   });
 
   it('should handle child_process.spawn errors', done => {
-    spawn('').subscribe({
+    spawn('not_exist').subscribe({
       error(err) {
         expect(err instanceof ShellError).to.true;
         done();

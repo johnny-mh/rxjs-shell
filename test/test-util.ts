@@ -1,5 +1,6 @@
 import {EventEmitter} from 'events';
-import {createSandbox, SinonSandbox} from 'sinon';
+
+import {SinonSandbox, createSandbox} from 'sinon';
 
 export class MockProcessEvent {
   private emitter: EventEmitter;
@@ -11,7 +12,7 @@ export class MockProcessEvent {
 
     this.sandbox
       .stub(process, 'on')
-      .callsFake((name: string, fn: any) => this.emitter.on(name, fn) as any);
+      .callsFake((name: any, fn: any) => this.emitter.on(name, fn) as any);
   }
 
   emit(eventName: string) {

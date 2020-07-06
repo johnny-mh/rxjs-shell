@@ -1,73 +1,71 @@
-import {spawn as nodeSpawn, SpawnOptions} from 'child_process';
+import {SpawnOptionsWithoutStdio, spawn as nodeSpawn} from 'child_process';
+
 import {Observable, Subscriber} from 'rxjs';
 
-import {RXJS_SHELL_ERROR, SpawnChunk} from './models';
-import {killProc, listenTerminating, ShellError} from './util';
+import {SpawnChunk} from './models';
+import {ShellError, killProc, listenTerminating} from './util';
 
-export function spawn(command: string, args?: any[], options?: SpawnOptions) {
+export function spawn(
+  command: string,
+  args?: any[],
+  options?: SpawnOptionsWithoutStdio
+) {
   return new Observable((subscriber: Subscriber<SpawnChunk>) => {
-    try {
-      const proc = nodeSpawn(command, args ? args.map(String) : args, options);
-      const stdouts: Buffer[] = [];
-      const stderrs: Buffer[] = [];
+    const proc = nodeSpawn(command, args ? args.map(String) : [], options);
+    const stdouts: Buffer[] = [];
+    const stderrs: Buffer[] = [];
 
-      if (proc.stdout) {
-        proc.stdout.on('data', chunk => {
-          stdouts.push(chunk);
-          subscriber.next({type: 'stdout', chunk});
-        });
-      }
+    if (proc.stdout) {
+      proc.stdout.on('data', chunk => {
+        stdouts.push(chunk);
+        subscriber.next({type: 'stdout', chunk});
+      });
+    }
 
-      if (proc.stderr) {
-        proc.stderr.on('data', chunk => {
-          stderrs.push(chunk);
-          subscriber.next({type: 'stderr', chunk});
-        });
-      }
+    if (proc.stderr) {
+      proc.stderr.on('data', chunk => {
+        stderrs.push(chunk);
+        subscriber.next({type: 'stderr', chunk});
+      });
+    }
 
-      proc.on('error', err => {
-        process.exitCode = 1;
+    proc.on('error', err => {
+      process.exitCode = 1;
+
+      subscriber.error(
+        new ShellError(
+          'process exited with an error',
+          err,
+          Buffer.concat(stdouts),
+          Buffer.concat(stderrs)
+        )
+      );
+    });
+
+    proc.on('close', (code: number, signal: NodeJS.Signals) => {
+      if (code > 0) {
+        process.exitCode = code;
 
         subscriber.error(
           new ShellError(
-            'spawn: process exited with error',
-            RXJS_SHELL_ERROR,
+            `process exited with code ${code}`,
+            {code, signal},
             Buffer.concat(stdouts),
-            Buffer.concat(stderrs),
-            err
+            Buffer.concat(stderrs)
           )
         );
-      });
 
-      proc.on('close', (code: number, signal: NodeJS.Signals) => {
-        if (code > 0) {
-          process.exitCode = code;
+        return;
+      }
 
-          subscriber.error(
-            new ShellError(
-              `spawn: ${signal} process exited with code ${code}`,
-              RXJS_SHELL_ERROR,
-              Buffer.concat(stdouts),
-              Buffer.concat(stderrs)
-            )
-          );
+      subscriber.complete();
+    });
 
-          return;
-        }
+    const removeEvents = listenTerminating(() => subscriber.complete());
 
-        subscriber.complete();
-      });
-
-      const removeEvents = listenTerminating(() => subscriber.complete());
-
-      return () => {
-        killProc(proc);
-        removeEvents();
-      };
-    } catch (err) {
-      subscriber.error(
-        new ShellError(err.message, err.code, undefined, undefined, err)
-      );
-    }
+    return () => {
+      killProc(proc);
+      removeEvents();
+    };
   });
 }

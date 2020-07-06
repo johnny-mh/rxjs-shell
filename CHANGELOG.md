@@ -1,3 +1,20 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [2.1.2](https://github.com/johnny-mh/rxjs-shell/compare/v2.0.0...v2.1.2) (2020-07-06)
+
+
+### Features
+
+* exporting `listenTerminating` ([a74cab8](https://github.com/johnny-mh/rxjs-shell/commit/a74cab89a4395985c05bea8d0d499d4422699e44))
+
+
+### Bug Fixes
+
+* `listenTerminating` callback parameter type ([c78fc86](https://github.com/johnny-mh/rxjs-shell/commit/c78fc8685917c41f6126400a1fdfb9e4db523ca1))
+* `listenTerminating` listen `SIGINT`, `SIGBREAK` only ([8f7d9b2](https://github.com/johnny-mh/rxjs-shell/commit/8f7d9b2e67fde15427ff951bf61b9c620cc8f12d))
+
 # 2.1.2 (2020-06-11)
 
 - change `listenTerminating` callback parameter type
@@ -76,4 +93,3 @@
 - add `operators/printBuf`: syntax sugar of `tap(buf => process.stdout.write(buf))`
 
 # [0.0.2](https://github.com/johnny-mh/rxjs-shell-operators/commit/d249d3570dcc6d87d200aae4570c621a90aafdeb) (2018-10-10)
-

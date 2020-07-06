@@ -24,7 +24,7 @@ describe('exec.ts', () => {
     exec('mkdir test').subscribe({
       error(err) {
         expect(err instanceof ShellError).to.true;
-        expect(String(err)).to.match(/exec/i);
+        expect(String(err)).to.match(/error/i);
         done();
       },
     });

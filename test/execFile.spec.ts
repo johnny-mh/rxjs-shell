@@ -1,6 +1,7 @@
-import {expect} from 'chai';
 import {existsSync} from 'fs';
 import {join} from 'path';
+
+import {expect} from 'chai';
 import {sync as rimrafSync} from 'rimraf';
 
 import {execFile} from '../src/execFile';
@@ -13,10 +14,17 @@ describe('execFile.ts', () => {
   });
 
   it('should return buffer text after script execution', done => {
-    execFile(join(process.cwd(), 'test/fixtures/echo.sh')).subscribe(output => {
-      expect(String(output.stdout).trim()).to.equal('Hello World');
-      done();
-    });
+    execFile(join(process.cwd(), 'test/fixtures/echo.sh')).subscribe(
+      output => {
+        expect(String(output.stdout).trim()).to.equal('Hello World');
+        done();
+      },
+      err => {
+        if (err instanceof ShellError) {
+          console.error(err.toAnnotatedString());
+        }
+      }
+    );
   });
 
   it('should kill process when stream unsubscribed', done => {
@@ -36,7 +44,7 @@ describe('execFile.ts', () => {
     execFile(join(process.cwd(), 'test/fixtures/execFile.sh')).subscribe({
       error(err) {
         expect(err instanceof ShellError).to.true;
-        expect(String(err)).to.match(/execFile/i);
+        expect(String(err)).to.match(/error/i);
         done();
       },
     });

@@ -2,22 +2,22 @@ language: node_js
 sudo: false
 dist: trusty
 node_js:
-- lts/*
+  - lts/*
 cache:
   directories:
-  - "./node_modules"
+    - './node_modules'
 before_script:
-- npm install
+  - yarn install
 script:
-- npm test
-- npm run build
-before_deploy:
-- cd dist
+  - yarn test
+  - yarn build
+  - 'yarn standard-version --releaseCommitMessageFormat="chore(release): {{currentTag}}\n\n[skip ci]"'
+  - git push --follow-tags https://johnny-mh:$GH_TOKEN@github.com/johnny-mh/rxjs-shell.git master
 deploy:
   provider: npm
   email: romz1212@gmail.com
   api_key:
-    secure: BhFsW9GoSmJyElcq4ebsmDnKihAtyL6mhTN2LEKmAEPl0aEmKnc8wJ9VeEdFAlD6EVrLXTxn2ru75VbT/fRrnsfjL8LwfrhqKLHr7q/88khoNQt88Kyr0Wf+NSzLLwwHf1t5rRqQ36hVS7d53EnCm+4+8hACkkOkz26KVzJy+uqrWBSRt3qxucXem3jLd652x04rqfTyrFuqeSCR0hvJ+Wrl25ofJ7bBdEiHWknH9nQ25QEw9fWqGfBy2G+d0koCc2BLSorHbd9MPrD7FcM/4c0Q14JQdakZULCWBo1Vzz8TXmK9t8lmoa2CmBRll5U7u8dR00ovAZjpzeXB1Gtv6Qgcm/tySsWGcyTNSVpBUPhzQEwJvEYrQ/lLuTfOJN5zyHfAcWagjVqtIn7bX+uz/ySKdo3W2LNoysHE8+W92Fu50k0Z17wHyvuuUuFv2N2OuqLPDgOB+8F47EI9VMlwYij6wJUs79zTsdlmhvJ+S7l0yxC4LEf0xyqzhU7s3mX/XjatW2wlpzQnvMeV4LRxWnpjDgoFc8OSbNxpJUpCFVG42e0p5s9YVrTXbMfOsVYmToR7YODlQOymKzpNv6OzbGQQXpwmC/DpbrtPPDC5VYe/E/EOFEvXo8afsQRNY6uhoVo/9euyakb4a5am/0WBXgkSEtkWQixNYUor08oGoDI=
+    secure: $NPM_TOKEN
   on:
     tags: true
-    repo: johnny-mh/rxjs-shell-operators
+    repo: johnny-mh/rxjs-shell

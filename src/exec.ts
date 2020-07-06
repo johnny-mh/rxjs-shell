@@ -1,16 +1,21 @@
-import {exec as nodeExec, ExecOptions} from 'child_process';
+import {ExecOptions, exec as nodeExec} from 'child_process';
+
 import {Observable, Subscriber} from 'rxjs';
 
-import {ExecOutput, RXJS_SHELL_ERROR} from './models';
-import {killProc, listenTerminating, ShellError} from './util';
+import {ExecOutput} from './models';
+import {ShellError, killProc, listenTerminating} from './util';
 
-export function exec(command: string, options?: ExecOptions) {
+export function exec(
+  command: string,
+  options?: ExecOptions
+): Observable<ExecOutput> {
   return new Observable((subscriber: Subscriber<ExecOutput>) => {
     const proc = nodeExec(command, options, (err, stdout, stderr) => {
-      if (!!err) {
+      if (err) {
         subscriber.error(
-          new ShellError('exec', RXJS_SHELL_ERROR, stdout, stderr, err)
+          new ShellError('process exited with an error', err, stdout, stderr)
         );
+
         return;
       }
 

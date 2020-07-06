@@ -1,0 +1,10 @@
+.nyc_output/
+coverage/
+dist/
+yarn.lock
+.gitignore
+.prettierignore
+LICENSE
+CHANGELOG.md
+*.sh
+*.d.ts

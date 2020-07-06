@@ -12,10 +12,7 @@ describe('operators.ts', () => {
 
   beforeEach(() => {
     scheduler = new TestScheduler((actual, expected) => {
-      chai
-        .expect(actual)
-        .excludingEvery('stack')
-        .deep.equal(expected);
+      chai.expect(actual).excludingEvery('stack').deep.equal(expected);
     });
   });
 
@@ -23,11 +20,11 @@ describe('operators.ts', () => {
     it('should trim ExecOutput contents', () => {
       scheduler.run(({cold, expectObservable}) => {
         const source$ = cold('-a', {
-          a: {stdout: new Buffer(' Hello '), stderr: new Buffer(' World')},
+          a: {stdout: Buffer.from(' Hello '), stderr: Buffer.from(' World')},
         });
 
         expectObservable(source$.pipe(trim())).toBe('-x', {
-          x: {stdout: new Buffer('Hello'), stderr: new Buffer('World')},
+          x: {stdout: Buffer.from('Hello'), stderr: Buffer.from('World')},
         });
       });
     });
@@ -35,11 +32,11 @@ describe('operators.ts', () => {
     it('should trim SpawnChunk contents', () => {
       scheduler.run(({cold, expectObservable}) => {
         const source$ = cold('-a', {
-          a: {type: 'stdout', chunk: new Buffer(' Hello World ')},
+          a: {type: 'stdout', chunk: Buffer.from(' Hello World ')},
         });
 
         expectObservable(source$.pipe(trim())).toBe('-x', {
-          x: {type: 'stdout', chunk: new Buffer('Hello World')},
+          x: {type: 'stdout', chunk: Buffer.from('Hello World')},
         });
       });
     });
@@ -62,7 +59,7 @@ describe('operators.ts', () => {
         const source$ = cold('a', {
           a: {
             type: 'stdout',
-            chunk: new Buffer('Error: test error'),
+            chunk: Buffer.from('Error: test error'),
           },
         });
 
@@ -72,7 +69,7 @@ describe('operators.ts', () => {
           new ShellError(
             'throwIf: stdout is matching /Error:/',
             undefined,
-            new Buffer('Error: test error'),
+            Buffer.from('Error: test error'),
             undefined
           )
         );
@@ -83,8 +80,8 @@ describe('operators.ts', () => {
       scheduler.run(({cold, expectObservable}) => {
         const source$ = cold('a', {
           a: {
-            stdout: new Buffer('GREAT!'),
-            stderr: new Buffer(''),
+            stdout: Buffer.from('GREAT!'),
+            stderr: Buffer.from(''),
           },
         });
 
@@ -94,7 +91,7 @@ describe('operators.ts', () => {
           new ShellError(
             'throwIf: stdout is matching /GREAT!/',
             undefined,
-            new Buffer('GREAT!'),
+            Buffer.from('GREAT!'),
             undefined
           )
         );
@@ -104,8 +101,8 @@ describe('operators.ts', () => {
     it('should not throw error when pattern is not matching', () => {
       scheduler.run(({cold, expectObservable}) => {
         const value = {
-          stdout: new Buffer('GREAT!'),
-          stderr: new Buffer(''),
+          stdout: Buffer.from('GREAT!'),
+          stderr: Buffer.from(''),
         };
         const source$ = cold('a', {a: value});
 
@@ -133,7 +130,7 @@ describe('operators.ts', () => {
         const source$ = cold('a', {
           a: {
             type: 'stdout',
-            chunk: new Buffer('Error: test error'),
+            chunk: Buffer.from('Error: test error'),
           },
         });
 
@@ -143,7 +140,7 @@ describe('operators.ts', () => {
           new ShellError(
             'throwIf: stdout is matching /Error:/',
             undefined,
-            new Buffer('Error: test error')
+            Buffer.from('Error: test error')
           )
         );
       });
@@ -153,7 +150,7 @@ describe('operators.ts', () => {
       scheduler.run(({cold, expectObservable}) => {
         const value = {
           type: 'stderr',
-          chunk: new Buffer('Error: test error'),
+          chunk: Buffer.from('Error: test error'),
         };
         const source$ = cold('a', {a: value});
 
@@ -167,7 +164,7 @@ describe('operators.ts', () => {
       scheduler.run(({cold, expectObservable}) => {
         const value = {
           type: 'stdout',
-          chunk: new Buffer('Error: test error'),
+          chunk: Buffer.from('Error: test error'),
         };
         const source$ = cold('a', {a: value});
 
@@ -181,8 +178,8 @@ describe('operators.ts', () => {
       scheduler.run(({cold, expectObservable}) => {
         const source$ = cold('a', {
           a: {
-            stdout: new Buffer('Stdout: test'),
-            stderr: new Buffer('Stderr: test'),
+            stdout: Buffer.from('Stdout: test'),
+            stderr: Buffer.from('Stderr: test'),
           },
         });
 
@@ -192,7 +189,7 @@ describe('operators.ts', () => {
           new ShellError(
             'throwIf: stdout is matching /Stdout:/',
             undefined,
-            new Buffer('Stdout: test')
+            Buffer.from('Stdout: test')
           )
         );
       });
@@ -201,8 +198,8 @@ describe('operators.ts', () => {
     it('should not throw error by ExecOutput stderr despite of contents pattern matching', () => {
       scheduler.run(({cold, expectObservable}) => {
         const value = {
-          stdout: new Buffer('stdout'),
-          stderr: new Buffer('stderr'),
+          stdout: Buffer.from('stdout'),
+          stderr: Buffer.from('stderr'),
         };
         const source$ = cold('a', {a: value});
 
@@ -219,7 +216,7 @@ describe('operators.ts', () => {
         const source$ = cold('a', {
           a: {
             type: 'stderr',
-            chunk: new Buffer('Error: test error'),
+            chunk: Buffer.from('Error: test error'),
           },
         });
 
@@ -230,7 +227,7 @@ describe('operators.ts', () => {
             'throwIf: stderr is matching /Error:/',
             undefined,
             undefined,
-            new Buffer('Error: test error')
+            Buffer.from('Error: test error')
           )
         );
       });
@@ -240,7 +237,7 @@ describe('operators.ts', () => {
       scheduler.run(({cold, expectObservable}) => {
         const value = {
           type: 'stdout',
-          chunk: new Buffer('Error: test error'),
+          chunk: Buffer.from('Error: test error'),
         };
         const source$ = cold('a', {a: value});
 
@@ -254,7 +251,7 @@ describe('operators.ts', () => {
       scheduler.run(({cold, expectObservable}) => {
         const value = {
           type: 'stderr',
-          chunk: new Buffer('Error: test error'),
+          chunk: Buffer.from('Error: test error'),
         };
         const source$ = cold('a', {a: value});
 
@@ -268,8 +265,8 @@ describe('operators.ts', () => {
       scheduler.run(({cold, expectObservable}) => {
         const source$ = cold('a', {
           a: {
-            stdout: new Buffer('Stdout: test'),
-            stderr: new Buffer('Stderr: test'),
+            stdout: Buffer.from('Stdout: test'),
+            stderr: Buffer.from('Stderr: test'),
           },
         });
 
@@ -280,7 +277,7 @@ describe('operators.ts', () => {
             'throwIf: stderr is matching /Stderr:/',
             undefined,
             undefined,
-            new Buffer('Stderr: test')
+            Buffer.from('Stderr: test')
           )
         );
       });
@@ -289,8 +286,8 @@ describe('operators.ts', () => {
     it('should not throw error by ExecOutput stdout despite of contents pattern matching', () => {
       scheduler.run(({cold, expectObservable}) => {
         const value = {
-          stdout: new Buffer('stdout'),
-          stderr: new Buffer('stderr'),
+          stdout: Buffer.from('stdout'),
+          stderr: Buffer.from('stderr'),
         };
         const source$ = cold('a', {a: value});
 

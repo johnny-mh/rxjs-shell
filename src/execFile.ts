@@ -1,26 +1,33 @@
-import {execFile as nodeExecFile, ExecFileOptions} from 'child_process';
+import {ExecFileOptions, execFile as nodeExecFile} from 'child_process';
+
 import {Observable, Subscriber} from 'rxjs';
 
-import {ExecOutput, RXJS_SHELL_ERROR} from './models';
-import {killProc, listenTerminating, ShellError} from './util';
+import {ExecOutput} from './models';
+import {ShellError, killProc, listenTerminating} from './util';
 
 export function execFile(
   file: string,
-  args?: ReadonlyArray<string>,
+  args?: any[],
   options?: ExecFileOptions
 ) {
   return new Observable((subscriber: Subscriber<ExecOutput>) => {
-    const proc = nodeExecFile(file, args, options, (err, stdout, stderr) => {
-      if (!!err) {
-        subscriber.error(
-          new ShellError('execFile', RXJS_SHELL_ERROR, stdout, stderr, err)
-        );
-        return;
-      }
+    const proc = nodeExecFile(
+      file,
+      args ? args.map(String) : args,
+      options,
+      (err, stdout, stderr) => {
+        if (err) {
+          subscriber.error(
+            new ShellError('process exited with an error', err, stdout, stderr)
+          );
 
-      subscriber.next({stdout, stderr});
-      subscriber.complete();
-    });
+          return;
+        }
+
+        subscriber.next({stdout, stderr});
+        subscriber.complete();
+      }
+    );
 
     const removeEvents = listenTerminating(() => subscriber.complete());
 

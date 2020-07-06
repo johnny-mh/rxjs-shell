@@ -1,8 +1,8 @@
-import {expect, spy, use} from 'chai';
-import spies from 'chai-spies';
 import {join} from 'path';
 
-import {tap} from 'rxjs/operators';
+import {expect} from 'chai';
+
+import {execFile} from '../src/execFile';
 import {isExecOutput} from '../src/operators';
 import {spawn} from '../src/spawn';
 import {ShellError, spawnEnd} from '../src/util';
@@ -30,5 +30,22 @@ describe('util.ts', () => {
         done();
       },
     });
+  });
+
+  it('should display annotated error', done => {
+    execFile(join(process.cwd(), 'test/fixtures/no_execute_perm.sh')).subscribe(
+      {
+        error(err) {
+          expect(err instanceof ShellError).to.be.true;
+
+          if (err instanceof ShellError) {
+            expect(err.toAnnotatedString()).to.match(/\* ERROR \*/);
+            expect(err.toAnnotatedString()).to.match(/"EACCES"/);
+          }
+
+          done();
+        },
+      }
+    );
   });
 });
