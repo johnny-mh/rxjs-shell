@@ -5,7 +5,7 @@ on:
     - master
 jobs:
   build:
-    runs-on: ubuntu-16.04
+    runs-on: macos-10.15
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -16,9 +16,6 @@ jobs:
       uses: borales/actions-yarn@v2.0.0
       with:
         cmd: install
-    - uses: actions/setup-node@v2.1.0
-      with:
-        node-version: '10.x'
     - name: Add dependencies for commitlint action
       run: echo "::set-env name=NODE_PATH::$GITHUB_WORKSPACE/node_modules"
     - uses: wagoid/commitlint-github-action@v1.7.0
