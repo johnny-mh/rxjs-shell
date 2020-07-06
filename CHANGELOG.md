@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/johnny-mh/rxjs-shell/compare/v2.1.2...v3.0.0) (2020-07-06)
+
+### Features
+
+* chore: using yarn, eslint, commitlint, standard-version
+    
+* feat: adding `toAnnotatedString` method to `ShellError`
+
+You can print annotated error message for debugging purpose. Guessing error is hard before.
+
+### ⚠ BREAKING CHANGES
+
+* `ShellError` class property `code` removed. you can use `originError`
+
 ### [2.1.2](https://github.com/johnny-mh/rxjs-shell/compare/v2.0.0...v2.1.2) (2020-07-06)
 
 
