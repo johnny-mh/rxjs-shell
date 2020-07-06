@@ -12,17 +12,16 @@ rxjs operators for execute shell command with ease.
 
 ## Functions
 
-### exec(command[, options]) → Observable\<{stdout: string | Buffer, stderr: string | Buffer}\> 
+### exec(command[, options]) → Observable\<{stdout: string | Buffer, stderr: string | Buffer}\>
 
 - `options` interface is same with nodejs `exec` method
 
 ```typescript
 import {exec} from 'rxjs-shell';
 
-exec('echo Hello World')
-  .subscribe(output => {
-    console.log(output.stdout.toString('utf8')); // Hello World\n
-  });
+exec('echo Hello World').subscribe(output => {
+  console.log(output.stdout.toString('utf8')); // Hello World\n
+});
 ```
 
 ### execFile(file[, args][, options]) → Observable\<{stdout: string | Buffer, stderr: string | Buffer}\>
@@ -32,11 +31,9 @@ exec('echo Hello World')
 ```typescript
 import {existSync} from 'fs';
 import {execFile} from 'rxjs-shell';
-
-execFile('./touchFile.sh')
-  .subscribe(() => {
-    console.log(existSync('touched.txt')); // true
-  });
+execFile('./touchFile.sh').subscribe(() => {
+  console.log(existSync('touched.txt')); // true
+});
 ```
 
 ### spawn(command[, args][, options]) → Observable\<{type: 'stdout' | 'stderr', chunk: Buffer}\>
@@ -57,12 +54,14 @@ spawn('git clone http://github.com/johnny-mh/rxjs-shell-operators')
 - same with `spawn` but have own `options` interface that extend nodejs's `fork` options to communicate with child process.
 
 ```typescript
-import {fork} from 'rxjs-shell';
 import {Subject} from 'rxjs';
+import {fork} from 'rxjs-shell';
 
 const send = new Subject<string>();
 
-fork('echo.js', undefined, {send}).subscribe(msgFromChildProc => console.log(msgFromChildProc));
+fork('echo.js', undefined, {send}).subscribe(msgFromChildProc =>
+  console.log(msgFromChildProc)
+);
 
 send.next('message to child process');
 ```
@@ -78,7 +77,9 @@ import {exec, trim} from 'rxjs-shell';
 
 exec('echo Hello').subscribe(output => console.log(output.stdout.toString())); // Hello\n
 
-exec('echo Hello').pipe(trim()).subscribe(output => console.log(output.stdout.toString())); // Hello
+exec('echo Hello')
+  .pipe(trim())
+  .subscribe(output => console.log(output.stdout.toString())); // Hello
 ```
 
 ### throwIf(pattern: string | RegExp)
@@ -123,11 +124,15 @@ exec('>&2 echo Hello').pipe(throwIfStderr(/Hello/)).subscribe(); // ERR
 import {spawn, spawnEnd} from 'rxjs-shell';
 
 spawn('webpack', ['-p'])
-  .pipe(outputChunk => { /* each child process's output buffer */ })
+  .pipe(outputChunk => {
+    /* each child process's output buffer */
+  })
   .subscribe();
 
 spawnEnd(spawn('webpack', ['-p']))
-  .pipe(webpackOutput => { /* do something */ })
+  .pipe(webpackOutput => {
+    /* do something */
+  })
   .subscribe();
 ```
 
@@ -141,33 +146,30 @@ basically each operators are listen that. if user pressed `^C` below stream is u
 
 ```typescript
 exec('curl ...')
-  .pipe(
-    concatMap(() => exec('curl ...'))
-  )
+  .pipe(concatMap(() => exec('curl ...')))
   .subscribe();
 ```
 
 but if operators are not tied of one stream. whole process does not terminate. in this case. you can use `listenTerminating`.
 
 ```typescript
-import {listenTerminating, exec} from 'rxjs-shell';
+import {exec, listenTerminating} from 'rxjs-shell';
 
-// terminate process 
+// terminate process
 listenTerminating(code => process.exit(code));
-
-(async () => {
+async () => {
   // user pressing ^C while curl is running
   await exec('curl ...').toPromise();
 
   // execute despite of pressing ^C. needs `listenTerminating`
   await exec('curl -X POST ...').toPromise();
-})
+};
 ```
 
 ## Error Handling
 
 ```typescript
-import {spawn, ShellError} from 'rxjs-shell';
+import {ShellError, spawn} from 'rxjs-shell';
 
 spawn('git clone http://github.com/johnny-mh/rxjs-shell-operators')
   .pipe(tap(chunk => process.stdout.write(String(chunk.chunk))))
@@ -177,12 +179,11 @@ spawn('git clone http://github.com/johnny-mh/rxjs-shell-operators')
         throw err;
       }
 
+      console.log(err.originError);
       console.log(err.stdout);
       console.log(err.stderr);
-      console.log(err.message);
-      console.log(err.code);
-      console.log(err.originError);
-    }
+      console.log(err.toAnnotatedString()); // print annotated errors
+    },
   });
 ```
 
