@@ -1,6 +1,7 @@
-import {expect} from 'chai';
 import {existsSync} from 'fs';
 import {join} from 'path';
+
+import {expect} from 'chai';
 import {sync as rimrafSync} from 'rimraf';
 import {Subject} from 'rxjs';
 
@@ -38,9 +39,8 @@ describe('fork.ts', () => {
 
   it('should send and receive message to forked process', done => {
     const send = new Subject<string>();
-    const recv = new Subject<string>();
 
-    fork<string>(join(process.cwd(), 'test/fixtures/fork3.js'), undefined, {
+    fork(join(process.cwd(), 'test/fixtures/fork3.js'), undefined, {
       send,
     }).subscribe(msg => {
       expect(msg).to.equal('hello world');
@@ -51,11 +51,10 @@ describe('fork.ts', () => {
   });
 
   it('should fork ts module', done => {
-    const recv = new Subject<any>();
-
-    fork(join(process.cwd(), 'test/fixtures/echo.ts'), undefined).subscribe(
-      msg => done()
-    );
+    fork(
+      join(process.cwd(), 'test/fixtures/echo.ts'),
+      undefined
+    ).subscribe(() => done());
   });
 
   it('should handle errors', done => {

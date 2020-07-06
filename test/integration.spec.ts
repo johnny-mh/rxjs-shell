@@ -1,4 +1,5 @@
 import {expect} from 'chai';
+
 import {throwIfStderr} from '../src';
 import {exec} from '../src/exec';
 

@@ -1,6 +1,7 @@
-import {expect} from 'chai';
 import {existsSync} from 'fs';
 import {join} from 'path';
+
+import {expect} from 'chai';
 import {sync as rimrafSync} from 'rimraf';
 
 import {execFile} from '../src/execFile';
@@ -36,7 +37,7 @@ describe('execFile.ts', () => {
     execFile(join(process.cwd(), 'test/fixtures/execFile.sh')).subscribe({
       error(err) {
         expect(err instanceof ShellError).to.true;
-        expect(String(err)).to.match(/execFile/i);
+        expect(String(err)).to.match(/error/i);
         done();
       },
     });
