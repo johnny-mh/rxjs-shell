@@ -1,17 +1,17 @@
-import {SpawnOptionsWithoutStdio, spawn as nodeSpawn} from 'child_process';
+import {SpawnOptions, spawn as nodeSpawn} from 'child_process';
 
 import {Observable, Subscriber} from 'rxjs';
 
 import {SpawnChunk} from './models';
 import {ShellError, killProc, listenTerminating} from './util';
 
-export function spawn(
-  command: string,
-  args?: any[],
-  options?: SpawnOptionsWithoutStdio
-) {
+export function spawn(command: string, args?: any[], options?: SpawnOptions) {
   return new Observable((subscriber: Subscriber<SpawnChunk>) => {
-    const proc = nodeSpawn(command, args ? args.map(String) : [], options);
+    const proc = nodeSpawn(
+      command,
+      args ? args.map(String) : [],
+      options as any
+    );
     const stdouts: Buffer[] = [];
     const stderrs: Buffer[] = [];
 
