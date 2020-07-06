@@ -14,7 +14,6 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - run: npm install
     - name: Add dependencies for commitlint action
       run: echo "::set-env name=NODE_PATH::$GITHUB_WORKSPACE/node_modules"
     - uses: wagoid/commitlint-github-action@v1
