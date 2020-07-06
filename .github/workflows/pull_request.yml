@@ -7,22 +7,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - uses: actions/checkout@v2
-      
     - name: install
       uses: borales/actions-yarn@v2.0.0
       with:
         cmd: install
-        
     - name: commitlint
       uses: wagoid/commitlint-github-action@v1.7.0
-      
     - name: test
       uses: borales/actions-yarn@v2.0.0
       with:
         cmd: test
-        
     - name: build
       uses: borales/actions-yarn@v2.0.0
       with:
