@@ -8,17 +8,10 @@ import {MockProcessEvent} from './test-util';
 
 describe('spawn.ts', () => {
   it('should return buffer text after script execution', done => {
-    spawn('echo', ['hello world']).subscribe(
-      output => {
-        expect(String(output.chunk).trim()).to.equal('hello world');
-        done();
-      },
-      err => {
-        if (err instanceof ShellError) {
-          console.error(err.toAnnotatedString());
-        }
-      }
-    );
+    spawn('echo', ['hello world']).subscribe(output => {
+      expect(String(output.chunk).trim()).to.equal('hello world');
+      done();
+    });
   });
 
   it('should return stderr text.', done => {

@@ -14,10 +14,17 @@ describe('execFile.ts', () => {
   });
 
   it('should return buffer text after script execution', done => {
-    execFile(join(process.cwd(), 'test/fixtures/echo.sh')).subscribe(output => {
-      expect(String(output.stdout).trim()).to.equal('Hello World');
-      done();
-    });
+    execFile(join(process.cwd(), 'test/fixtures/echo.sh')).subscribe(
+      output => {
+        expect(String(output.stdout).trim()).to.equal('Hello World');
+        done();
+      },
+      err => {
+        if (err instanceof ShellError) {
+          console.error(err.toAnnotatedString());
+        }
+      }
+    );
   });
 
   it('should kill process when stream unsubscribed', done => {
