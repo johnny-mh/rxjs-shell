@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/johnny-mh/rxjs-shell/compare/v3.0.0...v3.0.1) (2020-07-06)
+
+
+### Bug Fixes
+
+* using `SpawnOptions` instead of `SpawnOptionsWithoutStdio` ([70530fd](https://github.com/johnny-mh/rxjs-shell/commit/70530fd251ec212169a12bcacbefbd7d3559c04a))
+
 ## [3.0.0](https://github.com/johnny-mh/rxjs-shell/compare/v2.1.2...v3.0.0) (2020-07-06)
 
 ### Features
