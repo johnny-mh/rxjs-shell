@@ -1,4 +1,4 @@
-name: pull_request
+name: CI
 on: [pull_request]
 jobs:
   build:
@@ -7,16 +7,18 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: install
       uses: borales/actions-yarn@v2.0.0
       with:
         cmd: install
-    - uses: actions/setup-node@v1
+    - uses: actions/setup-node@v2.1.0
       with:
         node-version: '10.x'
     - name: Add dependencies for commitlint action
       run: echo "::set-env name=NODE_PATH::$GITHUB_WORKSPACE/node_modules"
-    - uses: wagoid/commitlint-github-action@v1
+    - uses: wagoid/commitlint-github-action@v1.7.0
     - name: test
       uses: borales/actions-yarn@v2.0.0
       with:
