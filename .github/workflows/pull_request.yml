@@ -5,25 +5,12 @@ on:
     - master
 jobs:
   build:
-    runs-on: macos-10.15
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: install
-      uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: install
-    - name: Add dependencies for commitlint action
-      run: echo "::set-env name=NODE_PATH::$GITHUB_WORKSPACE/node_modules"
-    - uses: wagoid/commitlint-github-action@v1.7.0
-    - name: test
-      uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: test
-    - name: build
-      uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: build
+    - name: yarn install, build and test
+      run: |
+        yarn install
+        git log -1 --pretty=format:"%s" | yarn commitlint
+        yarn build
+        yarn test
