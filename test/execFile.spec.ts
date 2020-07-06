@@ -13,7 +13,7 @@ describe('execFile.ts', () => {
     rimrafSync(join(process.cwd(), 'touched.txt'));
   });
 
-  it.skip('should return buffer text after script execution', done => {
+  it('should return buffer text after script execution', done => {
     execFile(join(process.cwd(), 'test/fixtures/echo.sh')).subscribe(
       output => {
         expect(String(output.stdout).trim()).to.equal('Hello World');
