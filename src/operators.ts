@@ -1,19 +1,7 @@
 import {Observable} from 'rxjs';
 
-import {ExecOutput, SpawnChunk} from './models';
+import {isExecOutput, isSpawnChunk} from './models';
 import {ShellError} from './util';
-
-function isSpawnChunk(obj: any): obj is SpawnChunk {
-  return !!obj && typeof obj.type === 'string' && Buffer.isBuffer(obj.chunk);
-}
-
-export function isExecOutput(obj: any): obj is ExecOutput {
-  return (
-    !!obj &&
-    (Buffer.isBuffer(obj.stdout) || typeof obj.stdout === 'string') &&
-    (Buffer.isBuffer(obj.stderr) || typeof obj.stderr === 'string')
-  );
-}
 
 export function trim<T>(encoding: BufferEncoding = 'utf8') {
   return function trimImplementation(source: Observable<T>): Observable<T> {

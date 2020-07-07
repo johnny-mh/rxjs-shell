@@ -3,7 +3,7 @@ import {join} from 'path';
 import {expect} from 'chai';
 
 import {execFile} from '../src/execFile';
-import {isExecOutput} from '../src/operators';
+import {isExecOutput} from '../src/models';
 import {spawn} from '../src/spawn';
 import {ShellError, spawnEnd} from '../src/util';
 

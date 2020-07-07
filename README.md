@@ -49,7 +49,7 @@ spawn('git clone http://github.com/johnny-mh/rxjs-shell-operators')
   .subscribe();
 ```
 
-### fork<T = any>(modulePath[, args][, options]) → Observable\<T\>
+### fork(modulePath[, args][, options]) → Observable\<Serializable\>
 
 - same with `spawn` but have own `options` interface that extend nodejs's `fork` options to communicate with child process.
 
@@ -165,6 +165,10 @@ async () => {
   await exec('curl -X POST ...').toPromise();
 };
 ```
+
+## isSpawnChunk(obj: any): obj is SpawnChunk
+
+## isExecOutput(obj: any): obj is ExecOutput
 
 ## Error Handling
 
