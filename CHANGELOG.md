@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.3](https://github.com/johnny-mh/rxjs-shell/compare/v3.0.2...v3.0.3) (2020-07-14)
+
+
+### Bug Fixes
+
+* bump standard-version from 8.0.0 to 8.0.1 ([50cc9c4](https://github.com/johnny-mh/rxjs-shell/commit/50cc9c426114933acd1b92ba8dbd22617a1b3aae))
+
 ### [3.0.2](https://github.com/johnny-mh/rxjs-shell/compare/v3.0.1...v3.0.2) (2020-07-07)
 
 
