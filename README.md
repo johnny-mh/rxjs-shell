@@ -1,6 +1,6 @@
 # rxjs-shell
 
-![travisci](https://travis-ci.org/johnny-mh/rxjs-shell.svg?branch=master)
+![CI](https://github.com/johnny-mh/rxjs-shell/workflows/CI/badge.svg)
 
 rxjs operators for execute shell command with ease.
 
