@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.5](https://github.com/johnny-mh/rxjs-shell/compare/v3.0.4...v3.0.5) (2020-10-06)
+
+
+### Bug Fixes
+
+* change type of ShellError~originError to solve wrong build issue ([#18](https://github.com/johnny-mh/rxjs-shell/issues/18)) ([34e2081](https://github.com/johnny-mh/rxjs-shell/commit/34e2081847905224adcab4a145b288fef09e5815))
+
 ### [3.0.4](https://github.com/johnny-mh/rxjs-shell/compare/v3.0.3...v3.0.4) (2020-08-15)
 
 ### [3.0.3](https://github.com/johnny-mh/rxjs-shell/compare/v3.0.2...v3.0.3) (2020-07-14)
