@@ -1,4 +1,4 @@
-import {ChildProcess, ExecException} from 'child_process';
+import {ChildProcess} from 'child_process';
 
 import {Observable, Subject} from 'rxjs';
 import kill from 'tree-kill';
@@ -50,10 +50,7 @@ export function spawnEnd(spawnObservable: Observable<SpawnChunk>) {
 export class ShellError extends Error {
   constructor(
     public message: string,
-    public originError?:
-      | ExecException
-      | Error
-      | {code: number; signal: NodeJS.Signals},
+    public originError?: any,
     public stdout?: string | Buffer,
     public stderr?: string | Buffer
   ) {
