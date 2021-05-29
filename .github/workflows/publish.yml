@@ -8,13 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2.1.5
-        with:
-          node-version: 14.16.1
-      - name: Build and Publish
+      - name: build and publish
         run: |
+          npm install
           npm run build
           npx standard-version --no-verify
           git push --follow-tags origin HEAD --no-verify
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
