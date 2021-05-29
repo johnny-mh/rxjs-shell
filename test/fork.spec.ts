@@ -51,10 +51,9 @@ describe('fork.ts', () => {
   });
 
   it('should fork ts module', done => {
-    fork(
-      join(process.cwd(), 'test/fixtures/echo.ts'),
-      undefined
-    ).subscribe(() => done());
+    fork(join(process.cwd(), 'test/fixtures/echo.ts'), undefined).subscribe(
+      () => done()
+    );
   });
 
   it('should handle errors', done => {

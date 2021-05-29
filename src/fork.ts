@@ -28,8 +28,8 @@ export function fork(
     proc.on('close', (code, signal) => {
       channelSubscriptions.forEach(s => s.unsubscribe());
 
-      if (code > 0) {
-        process.exitCode = code;
+      if (code !== 0) {
+        process.exitCode = typeof code === 'number' ? code : undefined;
 
         subscriber.error(
           new ShellError(`process exited with code: ${code}`, {
