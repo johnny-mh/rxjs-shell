@@ -1,0 +1,17 @@
+name: Publish
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and Publish
+        run: |
+          npm run build
+          npx standard-version --no-verify
+          git push --follow-tags origin HEAD --no-verify
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
