@@ -1,16 +1,15 @@
-name: CI
+name: PR Build
 on:
   pull_request:
-    branches:
-    - master
+    branches: [ master ]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: yarn install, build and test
+    - name: build and test
       run: |
-        yarn install
+        npm install
         git log -1 --pretty=format:"%s" | yarn commitlint
-        yarn build
-        yarn test
+        npm run build
+        npm test
