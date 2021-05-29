@@ -10,6 +10,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: build and publish
         run: |
+          git config --local user.name "johnny-mh"
+          git config --local user.email "romz1212@gmail.com"
           npm install
           npm run build
           npx standard-version --no-verify
