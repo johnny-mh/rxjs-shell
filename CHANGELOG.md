@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/johnny-mh/rxjs-shell/compare/v3.0.8...v3.1.0) (2021-12-15)
+
+
+### Features
+
+* add execWithStdin operator ([04cd51c](https://github.com/johnny-mh/rxjs-shell/commit/04cd51c5c20459f7ddc045fa3dfb1e57759ff551))
+* add procCallback to spawn function ([04f01a2](https://github.com/johnny-mh/rxjs-shell/commit/04f01a2c39a8d88ba48481fefb9b971e15a07cb9))
+
 ### [3.0.8](https://github.com/johnny-mh/rxjs-shell/compare/v3.0.7...v3.0.8) (2021-12-13)
 
 ### [3.0.7](https://github.com/johnny-mh/rxjs-shell/compare/v3.0.6...v3.0.7) (2021-05-29)
