@@ -1,8 +1,16 @@
 import * as chai from 'chai';
+import {expect} from 'chai';
 import chaiExclude from 'chai-exclude';
+import {of, tap} from 'rxjs';
 import {TestScheduler} from 'rxjs/testing';
 
-import {throwIf, throwIfStderr, throwIfStdout, trim} from '../src/operators';
+import {
+  execWithStdin,
+  throwIf,
+  throwIfStderr,
+  throwIfStdout,
+  trim,
+} from '../src/operators';
 import {ShellError} from '../src/util';
 
 chai.use(chaiExclude);
@@ -295,6 +303,17 @@ describe('operators.ts', () => {
           x: value,
         });
       });
+    });
+  });
+
+  describe('execWithStdin', () => {
+    it('should exec with string input', done => {
+      of('Hello World')
+        .pipe(execWithStdin('cat -'))
+        .subscribe(output => {
+          expect(String(output.stdout).trim()).to.equal('Hello World');
+          done();
+        });
     });
   });
 });

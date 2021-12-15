@@ -1,6 +1,9 @@
-import {Observable} from 'rxjs';
+import {ExecOptions} from 'child_process';
 
-import {isExecOutput, isSpawnChunk} from './models';
+import {Observable, mergeMap} from 'rxjs';
+
+import {exec} from './exec';
+import {ExecOutput, isExecOutput, isSpawnChunk} from './models';
 import {ShellError} from './util';
 
 export function trim<T>(encoding: BufferEncoding = 'utf8') {
@@ -180,5 +183,20 @@ export function throwIfStderr<T>(pattern: string | RegExp) {
 
       return subscription;
     });
+  };
+}
+
+export function execWithStdin(command: string, options?: ExecOptions) {
+  return function execWithStdinImplementation(
+    source: Observable<string>
+  ): Observable<ExecOutput> {
+    return source.pipe(
+      mergeMap(input =>
+        exec(command, options, proc => {
+          proc.stdin?.write(input);
+          proc.stdin?.end();
+        })
+      )
+    );
   };
 }

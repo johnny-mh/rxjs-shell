@@ -13,6 +13,16 @@ describe('exec.ts', () => {
     });
   });
 
+  it('should call procCallback with ChildProcess object', done => {
+    exec('cat -', undefined, proc => {
+      proc.stdin?.write('Hello World');
+      proc.stdin?.end();
+    }).subscribe(output => {
+      expect(String(output.stdout).trim()).to.equal('Hello World');
+      done();
+    });
+  });
+
   it('should return stderr text.', done => {
     exec('>&2 echo "ERR"').subscribe(output => {
       expect(String(output.stderr).trim()).to.equal('ERR');
