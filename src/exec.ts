@@ -1,4 +1,4 @@
-import {ExecOptions, exec as nodeExec} from 'child_process';
+import {ChildProcess, ExecOptions, exec as nodeExec} from 'child_process';
 
 import {Observable, Subscriber} from 'rxjs';
 
@@ -7,7 +7,8 @@ import {ShellError, killProc, listenTerminating} from './util';
 
 export function exec(
   command: string,
-  options?: ExecOptions
+  options?: ExecOptions,
+  procCallback?: (proc: ChildProcess) => void
 ): Observable<ExecOutput> {
   return new Observable((subscriber: Subscriber<ExecOutput>) => {
     const proc = nodeExec(command, options, (err, stdout, stderr) => {
@@ -24,6 +25,10 @@ export function exec(
     });
 
     const removeEvents = listenTerminating(() => subscriber.complete());
+
+    if (procCallback) {
+      procCallback(proc);
+    }
 
     return () => {
       killProc(proc);
