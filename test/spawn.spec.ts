@@ -14,6 +14,16 @@ describe('spawn.ts', () => {
     });
   });
 
+  it('should should call procCallback', done => {
+    spawn('cat', ['-'], undefined, proc => {
+      proc.stdin.write('hello world');
+      proc.stdin.end();
+    }).subscribe(output => {
+      expect(String(output.chunk).trim()).to.equal('hello world');
+      done();
+    });
+  });
+
   it('should return stderr text.', done => {
     spawn('sh', [join(process.cwd(), 'test/fixtures/echoStderr.sh')]).subscribe(
       output => {
