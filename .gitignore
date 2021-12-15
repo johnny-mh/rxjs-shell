@@ -60,4 +60,8 @@ typings/
 # next.js build output
 .next
 
+# Webstorm project directory
+/.idea
+
+# Build output directory
 dist/
