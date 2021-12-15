@@ -55,6 +55,7 @@
     ]
   },
   "dependencies": {
+    "rxjs": "^7.4.0",
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
@@ -83,7 +84,6 @@
     "prettier": "^2.5.1",
     "prettier-plugin-import-sort": "^0.0.7",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.4.0",
     "sinon": "^12.0.1",
     "source-map-support": "^0.5.21",
     "standard-version": "^9.3.2",
