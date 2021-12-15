@@ -1,11 +1,20 @@
-import {SpawnOptions, spawn as nodeSpawn} from 'child_process';
+import {
+  ChildProcessWithoutNullStreams,
+  SpawnOptions,
+  spawn as nodeSpawn,
+} from 'child_process';
 
 import {Observable, Subscriber} from 'rxjs';
 
 import {SpawnChunk} from './models';
 import {ShellError, killProc, listenTerminating} from './util';
 
-export function spawn(command: string, args?: any[], options?: SpawnOptions) {
+export function spawn(
+  command: string,
+  args?: any[],
+  options?: SpawnOptions,
+  procCallback?: (proc: ChildProcessWithoutNullStreams) => void
+) {
   return new Observable((subscriber: Subscriber<SpawnChunk>) => {
     const proc = nodeSpawn(
       command,
@@ -62,6 +71,10 @@ export function spawn(command: string, args?: any[], options?: SpawnOptions) {
     });
 
     const removeEvents = listenTerminating(() => subscriber.complete());
+
+    if (procCallback) {
+      procCallback(proc);
+    }
 
     return () => {
       killProc(proc);
