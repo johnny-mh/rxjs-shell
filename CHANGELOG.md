@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.2](https://github.com/johnny-mh/rxjs-shell/compare/v3.1.1...v3.1.2) (2021-12-15)
+
+
+### Bug Fixes
+
+* export newly added operator ([df84495](https://github.com/johnny-mh/rxjs-shell/commit/df844956f5f1541713641eb61944a17beaad59a5))
+
 ### [3.1.1](https://github.com/johnny-mh/rxjs-shell/compare/v3.1.0...v3.1.1) (2021-12-15)
 
 ## [3.1.0](https://github.com/johnny-mh/rxjs-shell/compare/v3.0.8...v3.1.0) (2021-12-15)
