@@ -15,7 +15,7 @@ rxjs operators for execute shell command with ease.
 ### exec(command[, options][, proccallback]) → Observable\<{stdout: string | Buffer, stderr: string | Buffer}\>
 
 - `options` interface is same with nodejs `exec` method
-- `procCallback` you can pass function. <code>?[ChildProcess](https://nodejs.org/dist/latest-v16.x/docs/api/child_process.html#class-childprocess)</code> will be passed first argument.
+- `procCallback` you can pass function. <code>[ChildProcess](https://nodejs.org/dist/latest-v16.x/docs/api/child_process.html#class-childprocess)</code> will be passed first argument.
 
 ```typescript
 import {exec} from 'rxjs-shell';
